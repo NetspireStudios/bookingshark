@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Admin Dashboard - ServicePro</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#256af4",
+            "background-light": "#f5f6f8",
+            "background-dark": "#101622",
+            "navy-sidebar": "#0f172a"
+          },
+          fontFamily: {
+            "display": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .section-content { display: none; }
+    .section-content.active { display: block; }
+    
+    .editor-step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      color: #94a3b8;
+      transition: all 0.2s;
+    }
+    .editor-step.active {
+      color: #256af4;
+      border-bottom-color: #256af4;
+      background: #eff6ff;
+    }
+    .editor-step.completed {
+      color: #22c55e;
+    }
+    .editor-step:hover {
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-white">
+<div class="flex h-screen overflow-hidden">
+  <!-- Side Navigation Bar -->
+  <aside class="w-72 bg-navy-sidebar text-white flex flex-col h-full border-r border-navy-sidebar/50">
+    <div class="p-6">
+      <!-- Brand / Logo -->
+      <div class="flex items-center gap-3 mb-8">
+        <div class="size-10 bg-primary rounded-lg flex items-center justify-center">
+          <span class="material-symbols-outlined text-white">admin_panel_settings</span>
+        </div>
+        <div class="flex flex-col">
+          <h1 class="text-white text-lg font-bold leading-none">ServicePro</h1>
+          <p class="text-slate-400 text-xs mt-1">Admin Portal</p>
+        </div>
+      </div>
+      
+      <!-- Add Booking Button -->
+      <a href="add-booking.html" class="flex items-center justify-center gap-2 px-4 py-3 mb-4 bg-primary hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors shadow-lg">
+        <span class="material-symbols-outlined">add</span>
+        <span class="text-sm">Add Booking</span>
+      </a>
+      
+      <!-- Nav Links -->
+      <nav class="flex flex-col gap-1">
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white" href="#" data-section="schedule">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span class="text-sm font-medium">Schedule</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="clients">
+          <span class="material-symbols-outlined">groups</span>
+          <span class="text-sm font-medium">Client Management</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="staff">
+          <span class="material-symbols-outlined">engineering</span>
+          <span class="text-sm font-medium">Staff Management</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="profile">
+          <span class="material-symbols-outlined">account_circle</span>
+          <span class="text-sm font-medium">Profile</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="forms">
+          <span class="material-symbols-outlined">description</span>
+          <span class="text-sm font-medium">Forms</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="settings">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="text-sm font-medium">Settings</span>
+        </a>
+      </nav>
+    </div>
+    
+    <!-- Sidebar Footer -->
+    <div class="mt-auto p-6 border-t border-white/10">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="size-8 bg-slate-700 rounded-full flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">person</span>
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-xs font-medium truncate" id="userEmail">Admin User</p>
+          <p class="text-[10px] text-slate-500 truncate">Administrator</p>
+        </div>
+      </div>
+      <button onclick="logout()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span class="text-sm">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- Top Nav Bar -->
+    <header class="h-16 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
+      <div class="flex items-center gap-6">
+        <h2 class="text-xl font-bold text-[#111318] dark:text-white tracking-tight" id="pageTitle">Admin Dashboard</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- Chat Button -->
+        <button id="chatButton" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg relative">
+          <span class="material-symbols-outlined">chat_bubble</span>
+          <span id="chatNotificationBadge" class="hidden absolute top-1 right-1 size-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold"></span>
+        </button>
+        <!-- Help Button -->
+        <a href="help.html" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg transition-colors">
+          <span class="material-symbols-outlined">help_outline</span>
+        </a>
+        <!-- Notifications Button -->
+        <button id="notificationButton" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg relative">
+          <span class="material-symbols-outlined">notifications</span>
+          <span id="notificationBadge" class="hidden absolute top-1 right-1 size-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold"></span>
+        </button>
+        <!-- Profile Button -->
+        <div class="relative">
+          <button id="profileButton" class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined">person</span>
+          </button>
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50">
+            <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+              <p class="text-sm font-semibold" id="profileName">Admin User</p>
+              <p class="text-xs text-slate-500" id="profileEmail">admin@servicepro.com</p>
+              <p class="text-xs text-primary font-medium mt-1" id="profileStatus">Administrator</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chat Panel -->
+    <div id="chatPanel" class="hidden fixed right-8 top-20 w-96 h-[600px] bg-white dark:bg-background-dark rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col z-50">
+      <!-- Chat Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="font-bold text-lg">Messages</h3>
+        <button id="closeChatPanel" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+          <span class="material-symbols-outlined text-slate-500">close</span>
+        </button>
+      </div>
+      
+      <!-- Chat List View -->
+      <div id="chatListView" class="flex-1 flex flex-col overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800">
+          <button id="startNewChatBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span>New Chat</span>
+          </button>
+        </div>
+        <div id="chatList" class="flex-1 overflow-y-auto">
+          <p class="text-center text-slate-400 py-8 text-sm">Loading...</p>
+        </div>
+      </div>
+
+      <!-- New Chat View -->
+      <div id="newChatView" class="hidden flex-1 flex flex-col p-6">
+        <h4 class="font-semibold mb-4">Start New Chat</h4>
+        <form id="newChatForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Enter User Email</label>
+            <input type="email" id="newChatEmail" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="user@example.com">
+            <p id="newChatError" class="text-red-500 text-xs mt-1"></p>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold py-2 rounded-lg transition-colors">Start Chat</button>
+            <button type="button" id="cancelNewChat" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition-colors">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Chat View -->
+      <div id="chatView" class="hidden flex-1 flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <button id="backToChats" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+            <span class="material-symbols-outlined text-slate-500">arrow_back</span>
+          </button>
+          <div>
+            <p class="font-semibold text-sm" id="chatUserName">User</p>
+          </div>
+        </div>
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3">
+          <!-- Messages will be loaded here -->
+        </div>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="flex gap-2">
+            <input type="text" id="messageInput" placeholder="Type a message..." class="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            <button id="sendMessageBtn" class="bg-primary hover:bg-primary/90 text-white p-2 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notificationPanel" class="hidden fixed right-8 top-20 w-96 max-h-[600px] bg-white dark:bg-background-dark rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col z-50">
+      <!-- Notification Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="font-bold text-lg">Notifications</h3>
+        <div class="flex items-center gap-2">
+          <button id="markAllReadBtn" class="text-xs text-primary hover:text-blue-600 font-medium">Mark all read</button>
+          <button id="closeNotificationPanel" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+            <span class="material-symbols-outlined text-slate-500">close</span>
+          </button>
+        </div>
+      </div>
+      <!-- Notification List -->
+      <div id="notificationList" class="flex-1 overflow-y-auto p-4 space-y-2">
+        <p class="text-center text-slate-500 text-sm py-8">No notifications</p>
+      </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="p-8">
+      
+      <!-- Schedule Section -->
+      <div id="schedule-section" class="section-content active">
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h3 class="text-2xl font-bold mb-2">Schedule Overview</h3>
+            <p class="text-slate-500">View and manage all service bookings</p>
+          </div>
+          <a href="add-booking.html" class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span>New Booking</span>
+          </a>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <div class="bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="size-12 rounded-lg bg-slate-500/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-slate-600">event</span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">Total Bookings</p>
+                <p class="text-2xl font-bold" id="totalBookingsCount">0</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="size-12 rounded-lg bg-red-500/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-red-600">person_search</span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">Unassigned</p>
+                <p class="text-2xl font-bold" id="unassignedBookingsCount">0</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="size-12 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-orange-600">pending</span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">Pending</p>
+                <p class="text-2xl font-bold" id="pendingBookingsCount">0</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="size-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-blue-600">check_circle</span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">Accepted</p>
+                <p class="text-2xl font-bold" id="acceptedBookingsCount">0</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="size-12 rounded-lg bg-green-500/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-green-600">done_all</span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">Completed</p>
+                <p class="text-2xl font-bold" id="completedBookingsCount">0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="bg-white dark:bg-background-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h4 class="text-lg font-bold">Calendar View</h4>
+            <div class="flex items-center gap-2">
+              <button onclick="previousMonth()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                <span class="material-symbols-outlined">chevron_left</span>
+              </button>
+              <span class="text-lg font-semibold min-w-[180px] text-center" id="currentMonthYear"></span>
+              <button onclick="nextMonth()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Calendar Grid -->
+          <div class="grid grid-cols-7 gap-2 mb-2">
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Sun</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Mon</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Tue</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Wed</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Thu</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Fri</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Sat</div>
+          </div>
+          <div id="calendarGrid" class="grid grid-cols-7 gap-2">
+            <!-- Calendar days will be generated here -->
+          </div>
+
+          <!-- Color Legend -->
+          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
+            <p class="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Status Colors:</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded bg-red-500"></div>
+                <span class="text-xs text-slate-600 dark:text-slate-400">Not Assigned</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded bg-orange-500"></div>
+                <span class="text-xs text-slate-600 dark:text-slate-400">Pending (Awaiting Staff)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded bg-blue-500"></div>
+                <span class="text-xs text-slate-600 dark:text-slate-400">Accepted</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded bg-green-500"></div>
+                <span class="text-xs text-slate-600 dark:text-slate-400">Completed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Booking Details Modal -->
+      <div id="bookingModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-background-dark rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <h3 class="text-xl font-bold">Booking Details</h3>
+            <button onclick="closeBookingModal()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <div id="bookingDetails" class="p-6">
+            <!-- Booking details will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Clients Section -->
+      <div id="clients-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Client Management</h3>
+          <p class="text-slate-500">Manage all registered clients</p>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="bg-white dark:bg-background-dark p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-6">
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+            <input type="text" id="clientSearch" placeholder="Search clients by name or email..." class="w-full pl-12 pr-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-slate-800">
+          </div>
+        </div>
+        
+        <!-- Clients List -->
+        <div id="clientsList" class="space-y-4">
+          <!-- Clients will be loaded here -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="clientsEmptyState" class="hidden bg-white dark:bg-background-dark p-12 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+          <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">groups</span>
+          <p class="text-slate-500">No clients found</p>
+        </div>
+      </div>
+      
+      <!-- Client Details Modal -->
+      <div id="clientModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-background-dark rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <h3 class="text-xl font-bold">Client Details</h3>
+            <button onclick="closeClientModal()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <div id="clientDetails" class="p-6">
+            <!-- Client details will be loaded here -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Edit Client Modal -->
+      <div id="editClientModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-background-dark rounded-xl max-w-md w-full">
+          <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <h3 class="text-xl font-bold">Edit Client</h3>
+            <button onclick="closeEditClientModal()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <form id="editClientForm" class="p-6 space-y-4">
+            <input type="hidden" id="editClientEmail">
+            <div>
+              <label class="block text-sm font-semibold mb-2">First Name</label>
+              <input type="text" id="editClientFirstName" required class="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-slate-800">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Last Name</label>
+              <input type="text" id="editClientLastName" required class="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-slate-800">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Phone</label>
+              <input type="tel" id="editClientPhone" required class="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-slate-800">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">City</label>
+              <input type="text" id="editClientCity" required class="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-slate-800">
+            </div>
+            <div class="flex gap-3 pt-4">
+              <button type="button" onclick="closeEditClientModal()" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium transition-colors">
+                Cancel
+              </button>
+              <button type="submit" class="flex-1 px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Staff Section -->
+      <div id="staff-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Staff Management</h3>
+          <p class="text-slate-500">Add, view, and manage staff members</p>
+        </div>
+        
+        <!-- Add Staff Form -->
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 mb-6">
+          <h4 class="font-bold text-lg mb-4">Add New Staff Member</h4>
+          <div id="addStaffMessage" class="mb-4"></div>
+          
+          <form id="addStaffForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">First Name</label>
+                <input type="text" id="staffFirstName" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Last Name</label>
+                <input type="text" id="staffLastName" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+              </div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+              <input type="email" id="staffEmail" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
+                <input type="tel" id="staffPhone" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Location</label>
+                <input type="text" id="staffLocation" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                <input type="password" id="staffPassword" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Confirm Password</label>
+                <input type="password" id="staffPasswordConfirm" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+              </div>
+            </div>
+            
+            <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 transition-colors">
+              <span class="material-symbols-outlined">person_add</span>
+              <span>Add Staff Member</span>
+            </button>
+          </form>
+        </div>
+        
+        <!-- Staff List -->
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+          <h4 class="font-bold text-lg mb-4">Current Staff Members</h4>
+          <div id="staffList" class="space-y-3">
+            <p class="text-center text-slate-400 py-8">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Section -->
+      <div id="profile-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Profile</h3>
+          <p class="text-slate-500">Manage your admin profile</p>
+        </div>
+        <div class="bg-white dark:bg-background-dark p-8 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+          <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">account_circle</span>
+          <p class="text-slate-500">Profile settings coming soon</p>
+        </div>
+      </div>
+
+      <!-- Forms Section -->
+      <div id="forms-section" class="section-content">
+        <div class="mb-6 flex justify-between items-center">
+          <div>
+            <h3 class="text-2xl font-bold mb-2">Service Forms</h3>
+            <p class="text-slate-500">Build booking forms for any service-based business</p>
+          </div>
+          <button onclick="openServiceEditor()" class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
+            <span class="material-symbols-outlined">add</span>
+            <span>Add Service</span>
+          </button>
+        </div>
+
+        <!-- Active Service Banner -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-blue-600">check_circle</span>
+              <div>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Currently Active Service</p>
+                <p class="font-bold text-lg" id="activeServiceName">Loading...</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-full">ACTIVE</span>
+          </div>
+        </div>
+
+        <!-- Services List -->
+        <div id="servicesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Services will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Service Editor Modal (4 Steps) -->
+      <div id="serviceEditorModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-background-dark rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+          <!-- Header -->
+          <div class="flex justify-between items-center p-6 border-b border-slate-200">
+            <div>
+              <h3 class="text-xl font-bold" id="editorTitle">Service Editor</h3>
+              <p class="text-sm text-slate-500" id="editorStepIndicator">Step 1 of 4: Basics</p>
+            </div>
+            <button onclick="closeServiceEditor()" class="material-symbols-outlined text-slate-400 hover:text-slate-600">close</button>
+          </div>
+
+          <!-- Step Progress -->
+          <div class="flex border-b border-slate-200">
+            <div class="editor-step active" data-step="1">
+              <span class="material-symbols-outlined">info</span>
+              <span>Basics</span>
+            </div>
+            <div class="editor-step" data-step="2">
+              <span class="material-symbols-outlined">list</span>
+              <span>Questions</span>
+            </div>
+            <div class="editor-step" data-step="3">
+              <span class="material-symbols-outlined">attach_money</span>
+              <span>Pricing</span>
+            </div>
+            <div class="editor-step" data-step="4">
+              <span class="material-symbols-outlined">visibility</span>
+              <span>Preview</span>
+            </div>
+          </div>
+
+          <!-- Step Content -->
+          <div class="flex-1 overflow-y-auto p-6" id="editorContent">
+            <!-- Content will be dynamically loaded -->
+          </div>
+
+          <!-- Footer -->
+          <div class="flex justify-between items-center p-6 border-t border-slate-200">
+            <button onclick="previousEditorStep()" id="btnPrevious" class="px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span>Previous</span>
+              </span>
+            </button>
+            <button onclick="nextEditorStep()" id="btnNext" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600">
+              <span class="flex items-center gap-2">
+                <span>Next</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              </span>
+            </button>
+            <button onclick="saveService()" id="btnSave" class="hidden px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined">save</span>
+                <span>Save Service</span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Section -->
+      <div id="settings-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Settings</h3>
+          <p class="text-slate-500">Configure system settings</p>
+        </div>
+        <div class="bg-white dark:bg-background-dark p-8 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+          <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">settings</span>
+          <p class="text-slate-500">Settings coming soon</p>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<script src="chat-component.js"></script>
+<script>
+  async function checkAuth() {
+    const response = await fetch('/api/session');
+    const data = await response.json();
+    
+    if (!data.loggedIn || data.user.userType !== 'admin') {
+      window.location.href = '/';
+      return;
+    }
+    
+    document.getElementById('userEmail').textContent = data.user.email;
+    document.getElementById('profileName').textContent = 'Admin User';
+    document.getElementById('profileEmail').textContent = data.user.email;
+    document.getElementById('profileStatus').textContent = 'Administrator';
+    loadStaffList();
+  }
+
+  async function logout() {
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/';
+  }
+
+  // Navigation
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const section = link.dataset.section;
+      
+      // Update active nav
+      document.querySelectorAll('.nav-link').forEach(l => {
+        l.classList.remove('bg-primary', 'text-white');
+        l.classList.add('text-slate-400');
+      });
+      link.classList.add('bg-primary', 'text-white');
+      link.classList.remove('text-slate-400');
+      
+      // Show section
+      document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+      document.getElementById(`${section}-section`).classList.add('active');
+      
+      // Update title
+      const titles = {
+        schedule: 'Schedule Overview',
+        clients: 'Client Management',
+        staff: 'Staff Management',
+        profile: 'Profile',
+        forms: 'Forms',
+        settings: 'Settings'
+      };
+      document.getElementById('pageTitle').textContent = titles[section] || 'Admin Dashboard';
+    });
+  });
+
+  function showMessage(message, isError) {
+    const messageEl = document.getElementById('addStaffMessage');
+    messageEl.innerHTML = `<div class="px-4 py-3 rounded-lg ${isError ? 'bg-red-50 text-red-800 border border-red-200' : 'bg-green-50 text-green-800 border border-green-200'} text-sm font-medium">${message}</div>`;
+    setTimeout(() => {
+      messageEl.innerHTML = '';
+    }, 3000);
+  }
+
+  async function loadStaffList() {
+    try {
+      const response = await fetch('/api/admin/staff');
+      const staff = await response.json();
+      
+      const staffListEl = document.getElementById('staffList');
+      
+      if (staff.length === 0) {
+        staffListEl.innerHTML = '<p class="text-center text-slate-400 py-8">No staff members yet. Add your first staff member above.</p>';
+      } else {
+        staffListEl.innerHTML = staff.map(s => `
+          <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+            <div class="flex items-center gap-4 flex-1">
+              <div class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">person</span>
+              </div>
+              <div class="grid grid-cols-4 gap-4 flex-1">
+                <div>
+                  <p class="text-xs text-slate-500 font-medium">Name</p>
+                  <p class="text-sm font-semibold">${s.firstName} ${s.lastName}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-500 font-medium">Email</p>
+                  <p class="text-sm">${s.email}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-500 font-medium">Phone</p>
+                  <p class="text-sm">${s.phone}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-500 font-medium">Location</p>
+                  <p class="text-sm">${s.location}</p>
+                </div>
+              </div>
+            </div>
+            <button onclick="removeStaff('${s.email}')" class="ml-4 text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        `).join('');
+      }
+    } catch (error) {
+      document.getElementById('staffList').innerHTML = '<p class="text-center text-red-500 py-8">Error loading staff list.</p>';
+    }
+  }
+
+  async function removeStaff(email) {
+    if (!confirm(`Are you sure you want to remove this staff member?\\n\\nEmail: ${email}`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/admin/remove-staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        showMessage('Staff member removed successfully!', false);
+        loadStaffList();
+      } else {
+        showMessage(data.error, true);
+      }
+    } catch (error) {
+      showMessage('An error occurred. Please try again.', true);
+    }
+  }
+
+  document.getElementById('addStaffForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const firstName = document.getElementById('staffFirstName').value;
+    const lastName = document.getElementById('staffLastName').value;
+    const email = document.getElementById('staffEmail').value;
+    const phone = document.getElementById('staffPhone').value;
+    const location = document.getElementById('staffLocation').value;
+    const password = document.getElementById('staffPassword').value;
+    const passwordConfirm = document.getElementById('staffPasswordConfirm').value;
+    
+    if (password !== passwordConfirm) {
+      showMessage('Passwords do not match', true);
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/admin/add-staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, phone, location, password })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        showMessage('Staff member added successfully!', false);
+        document.getElementById('addStaffForm').reset();
+        loadStaffList();
+      } else {
+        showMessage(data.error, true);
+      }
+    } catch (error) {
+      showMessage('An error occurred. Please try again.', true);
+    }
+  });
+
+  // Booking Management Functions
+  let allBookings = [];
+  let currentDate = new Date();
+
+  async function loadBookings() {
+    try {
+      const response = await fetch('/api/bookings/all');
+      const data = await response.json();
+      allBookings = data.bookings;
+      
+      // Update stats
+      updateBookingStats(allBookings);
+      
+      // Render calendar
+      renderCalendar();
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+    }
+  }
+
+  function updateBookingStats(bookings) {
+    const unassigned = bookings.filter(b => b.status === 'not_assigned').length;
+    const pending = bookings.filter(b => b.status === 'pending' || b.status === 'pending_acceptance').length;
+    const accepted = bookings.filter(b => b.status === 'accepted').length;
+    const completed = bookings.filter(b => b.status === 'completed').length;
+    
+    document.getElementById('totalBookingsCount').textContent = bookings.length;
+    document.getElementById('unassignedBookingsCount').textContent = unassigned;
+    document.getElementById('pendingBookingsCount').textContent = pending;
+    document.getElementById('acceptedBookingsCount').textContent = accepted;
+    document.getElementById('completedBookingsCount').textContent = completed;
+  }
+
+  function renderCalendar() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    // Update header
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    document.getElementById('currentMonthYear').textContent = `${monthNames[month]} ${year}`;
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    const calendarGrid = document.getElementById('calendarGrid');
+    calendarGrid.innerHTML = '';
+    
+    // Add empty cells for days before month starts
+    for (let i = 0; i < firstDay; i++) {
+      const emptyCell = document.createElement('div');
+      emptyCell.className = 'h-24 bg-slate-50 dark:bg-slate-900 rounded-lg';
+      calendarGrid.appendChild(emptyCell);
+    }
+    
+    // Add cells for each day of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayDate = new Date(year, month, day);
+      const dayBookings = allBookings.filter(booking => {
+        const bookingDate = new Date(booking.serviceDate);
+        return bookingDate.getFullYear() === year &&
+               bookingDate.getMonth() === month &&
+               bookingDate.getDate() === day;
+      });
+      
+      const isToday = new Date().toDateString() === dayDate.toDateString();
+      
+      const dayCell = document.createElement('div');
+      dayCell.className = `h-24 bg-white dark:bg-background-dark border ${isToday ? 'border-primary border-2' : 'border-slate-200 dark:border-slate-800'} rounded-lg p-2 overflow-y-auto`;
+      
+      dayCell.innerHTML = `
+        <div class="text-sm font-semibold mb-1 ${isToday ? 'text-primary' : 'text-slate-600'}">${day}</div>
+        ${dayBookings.map(booking => {
+          const statusColors = {
+            'not_assigned': 'bg-red-500',
+            'pending': 'bg-red-500',
+            'pending_acceptance': 'bg-orange-500',
+            'accepted': 'bg-blue-500',
+            'completed': 'bg-green-500'
+          };
+          const statusLabels = {
+            'not_assigned': 'Not Assigned',
+            'pending': 'Not Assigned',
+            'pending_acceptance': 'Pending',
+            'accepted': 'Accepted',
+            'completed': 'Completed'
+          };
+          return `
+            <div class="text-xs mb-1 p-1 ${statusColors[booking.status]} text-white rounded cursor-pointer hover:opacity-80" onclick="openBookingModal('${booking.id}')">
+              <div class="font-medium truncate">${booking.client.firstName} ${booking.client.lastName}</div>
+              <div class="text-[10px] truncate">${statusLabels[booking.status]}</div>
+            </div>
+          `;
+        }).join('')}
+      `;
+      
+      calendarGrid.appendChild(dayCell);
+    }
+  }
+
+  function previousMonth() {
+    currentDate.setDate(1); // Set to 1st to avoid month overflow
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  }
+
+  function nextMonth() {
+    currentDate.setDate(1); // Set to 1st to avoid month overflow
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  }
+
+  async function openBookingModal(bookingId) {
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}`);
+      const data = await response.json();
+      const booking = data.booking;
+      
+      const date = new Date(booking.serviceDate);
+      const formattedDate = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      
+      const extras = [];
+      if (booking.extras.pets) extras.push('Pets');
+      if (booking.extras.insideFridge) extras.push('Inside Fridge');
+      if (booking.extras.insideOven) extras.push('Inside Oven');
+      if (booking.extras.interiorWindow) extras.push('Interior Window');
+      
+      document.getElementById('bookingDetails').innerHTML = `
+        <div class="space-y-6">
+          <!-- Client Info -->
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">person</span>
+              Client Information
+            </h4>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p class="text-slate-500">Name</p>
+                <p class="font-medium">${booking.client.firstName} ${booking.client.lastName}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Email</p>
+                <p class="font-medium">${booking.client.email}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Service Details -->
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">home</span>
+              Service Details
+            </h4>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p class="text-slate-500">Date</p>
+                <p class="font-medium">${formattedDate}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Frequency</p>
+                <p class="font-medium">${booking.frequency.charAt(0).toUpperCase() + booking.frequency.slice(1)}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Square Footage</p>
+                <p class="font-medium">${parseInt(booking.service.sqft).toLocaleString()} sq/ft</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Bedrooms</p>
+                <p class="font-medium">${booking.service.bedrooms}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Bathrooms</p>
+                <p class="font-medium">${booking.service.washrooms}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Half Bathrooms</p>
+                <p class="font-medium">${booking.service.halfWashrooms}</p>
+              </div>
+            </div>
+          </div>
+          
+          ${extras.length > 0 ? `
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">add_circle</span>
+              Extras
+            </h4>
+            <div class="flex flex-wrap gap-2">
+              ${extras.map(extra => `<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-sm">${extra}</span>`).join('')}
+            </div>
+          </div>
+          ` : ''}
+          
+          ${booking.notes ? `
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">note</span>
+              Notes
+            </h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">${booking.notes}</p>
+          </div>
+          ` : ''}
+          
+          <!-- Assign Staff -->
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">engineering</span>
+              Assign to Staff
+            </h4>
+            ${booking.assignedTo ? `
+              <div class="mb-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-between">
+                <div class="flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                  <span class="material-symbols-outlined">check_circle</span>
+                  <span class="font-medium">Assigned to: ${booking.assignedTo}</span>
+                </div>
+                <button onclick="unassignBooking('${booking.id}')" class="text-sm text-red-600 hover:text-red-700 font-medium">Unassign</button>
+              </div>
+            ` : ''}
+            <form onsubmit="assignBooking(event, '${booking.id}')" class="flex gap-2">
+              <input type="email" id="assignEmail" placeholder="Enter staff email" required class="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-slate-800">
+              <button type="submit" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">Assign</button>
+            </form>
+          </div>
+          
+          <!-- Actions -->
+          <div class="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+            <button onclick="deleteBooking('${booking.id}')" class="flex-1 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg font-medium transition-colors">
+              Delete Booking
+            </button>
+            <button onclick="closeBookingModal()" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium transition-colors">
+              Close
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('bookingModal').classList.remove('hidden');
+    } catch (error) {
+      console.error('Error loading booking:', error);
+      alert('Failed to load booking details');
+    }
+  }
+
+  function closeBookingModal() {
+    document.getElementById('bookingModal').classList.add('hidden');
+  }
+
+  async function assignBooking(event, bookingId) {
+    event.preventDefault();
+    const staffEmail = document.getElementById('assignEmail').value;
+    
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}/assign`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ staffEmail })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert('Booking assigned successfully!');
+        closeBookingModal();
+        loadBookings();
+      } else {
+        alert(data.error || 'Failed to assign booking');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred');
+    }
+  }
+
+  async function unassignBooking(bookingId) {
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assignedTo: null, status: 'pending' })
+      });
+      
+      if (response.ok) {
+        alert('Booking unassigned successfully!');
+        closeBookingModal();
+        loadBookings();
+      } else {
+        alert('Failed to unassign booking');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred');
+    }
+  }
+
+  async function deleteBooking(bookingId) {
+    if (!confirm('Are you sure you want to delete this booking?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        alert('Booking deleted successfully!');
+        closeBookingModal();
+        loadBookings();
+      } else {
+        alert('Failed to delete booking');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred');
+    }
+  }
+
+  // Close modal when clicking outside
+  document.getElementById('bookingModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'bookingModal') {
+      closeBookingModal();
+    }
+  });
+
+  // Client Management Functions
+  let allClients = [];
+
+  async function loadClients() {
+    try {
+      const response = await fetch('/api/admin/clients');
+      const data = await response.json();
+      // Sort clients alphabetically by first name, then last name
+      allClients = data.clients.sort((a, b) => {
+        const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
+        const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+      displayClients(allClients);
+    } catch (error) {
+      console.error('Error loading clients:', error);
+    }
+  }
+
+  function displayClients(clients) {
+    const clientsListEl = document.getElementById('clientsList');
+    const emptyStateEl = document.getElementById('clientsEmptyState');
+    
+    if (clients.length === 0) {
+      clientsListEl.innerHTML = '';
+      emptyStateEl.classList.remove('hidden');
+    } else {
+      emptyStateEl.classList.add('hidden');
+      clientsListEl.innerHTML = clients.map(client => {
+        const lastService = client.serviceHistory.lastService 
+          ? new Date(client.serviceHistory.lastService).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : 'Never';
+        
+        return `
+          <div class="bg-white dark:bg-background-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6 hover:shadow-lg transition-shadow">
+            <div class="flex items-start justify-between gap-4">
+              <!-- Client Info -->
+              <div class="flex items-start gap-4 flex-1">
+                <div class="size-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-2xl">person</span>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg mb-1">${client.firstName} ${client.lastName}</h4>
+                  <p class="text-sm text-slate-500 mb-3">${client.email}</p>
+                  
+                  <!-- Service Summary -->
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
+                    <div>
+                      <p class="text-xs text-slate-500">Total Services</p>
+                      <p class="text-sm font-semibold">${client.serviceHistory.total}</p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-slate-500">Completed</p>
+                      <p class="text-sm font-semibold text-green-600">${client.serviceHistory.completed}</p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-slate-500">Upcoming</p>
+                      <p class="text-sm font-semibold text-blue-600">${client.serviceHistory.upcoming}</p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-slate-500">Last Service</p>
+                      <p class="text-sm font-semibold">${lastService}</p>
+                    </div>
+                  </div>
+                  
+                  <button onclick="viewClientDetails('${client.email}')" class="text-sm text-primary hover:text-blue-600 font-medium">
+                    View Full Details →
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Three Dot Menu -->
+              <div class="relative">
+                <button onclick="toggleClientMenu(event, '${client.email}')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                  <span class="material-symbols-outlined text-slate-600">more_vert</span>
+                </button>
+                <div id="clientMenu-${client.email}" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-10">
+                  <button onclick="editClient('${client.email}')" class="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">edit</span>
+                    Edit Information
+                  </button>
+                  <button onclick="deleteClient('${client.email}', '${client.firstName} ${client.lastName}')" class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                    Remove Client
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  function toggleClientMenu(event, email) {
+    event.stopPropagation();
+    // Close all other menus
+    document.querySelectorAll('[id^="clientMenu-"]').forEach(menu => {
+      if (menu.id !== `clientMenu-${email}`) {
+        menu.classList.add('hidden');
+      }
+    });
+    // Toggle current menu
+    document.getElementById(`clientMenu-${email}`).classList.toggle('hidden');
+  }
+
+  // Close menus when clicking outside
+  document.addEventListener('click', () => {
+    document.querySelectorAll('[id^="clientMenu-"]').forEach(menu => menu.classList.add('hidden'));
+  });
+
+  async function viewClientDetails(email) {
+    try {
+      const client = allClients.find(c => c.email === email);
+      if (!client) return;
+      
+      // Get client's bookings
+      const response = await fetch('/api/bookings/all');
+      const data = await response.json();
+      const clientBookings = data.bookings.filter(b => b.client.email === email);
+      
+      document.getElementById('clientDetails').innerHTML = `
+        <div class="space-y-6">
+          <!-- Client Info -->
+          <div class="flex items-center gap-4">
+            <div class="size-20 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-4xl">person</span>
+            </div>
+            <div>
+              <h4 class="text-2xl font-bold">${client.firstName} ${client.lastName}</h4>
+              <p class="text-slate-500">${client.email}</p>
+            </div>
+          </div>
+          
+          <!-- Contact Info -->
+          <div class="grid grid-cols-2 gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+            <div>
+              <p class="text-xs text-slate-500 mb-1">Phone</p>
+              <p class="font-semibold">${client.phone}</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 mb-1">City</p>
+              <p class="font-semibold">${client.city}</p>
+            </div>
+          </div>
+          
+          <!-- Service Stats -->
+          <div>
+            <h5 class="font-semibold mb-3">Service Summary</h5>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p class="text-sm text-slate-600 dark:text-slate-400">Total Services</p>
+                <p class="text-2xl font-bold text-primary">${client.serviceHistory.total}</p>
+              </div>
+              <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <p class="text-sm text-slate-600 dark:text-slate-400">Completed</p>
+                <p class="text-2xl font-bold text-green-600">${client.serviceHistory.completed}</p>
+              </div>
+              <div class="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <p class="text-sm text-slate-600 dark:text-slate-400">Upcoming</p>
+                <p class="text-2xl font-bold text-orange-600">${client.serviceHistory.upcoming}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Service History -->
+          <div>
+            <h5 class="font-semibold mb-3">Service History</h5>
+            ${clientBookings.length > 0 ? `
+              <div class="space-y-2 max-h-60 overflow-y-auto">
+                ${clientBookings.map(booking => {
+                  const date = new Date(booking.serviceDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                  const statusColors = {
+                    'not_assigned': 'bg-red-100 text-red-800',
+                    'pending': 'bg-red-100 text-red-800',
+                    'pending_acceptance': 'bg-orange-100 text-orange-800',
+                    'accepted': 'bg-blue-100 text-blue-800',
+                    'completed': 'bg-green-100 text-green-800'
+                  };
+                  return `
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center justify-between">
+                      <div>
+                        <p class="font-medium">${booking.frequency.charAt(0).toUpperCase() + booking.frequency.slice(1)} Cleaning</p>
+                        <p class="text-sm text-slate-500">${date}</p>
+                      </div>
+                      <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusColors[booking.status]}">${booking.status}</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            ` : '<p class="text-slate-500 text-sm">No service history</p>'}
+          </div>
+          
+          <div class="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+            <button onclick="closeClientModal()" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium transition-colors">
+              Close
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('clientModal').classList.remove('hidden');
+    } catch (error) {
+      console.error('Error viewing client details:', error);
+    }
+  }
+
+  function closeClientModal() {
+    document.getElementById('clientModal').classList.add('hidden');
+  }
+
+  function editClient(email) {
+    const client = allClients.find(c => c.email === email);
+    if (!client) return;
+    
+    document.getElementById('editClientEmail').value = client.email;
+    document.getElementById('editClientFirstName').value = client.firstName;
+    document.getElementById('editClientLastName').value = client.lastName;
+    document.getElementById('editClientPhone').value = client.phone;
+    document.getElementById('editClientCity').value = client.city;
+    
+    document.getElementById('editClientModal').classList.remove('hidden');
+    document.getElementById(`clientMenu-${email}`).classList.add('hidden');
+  }
+
+  function closeEditClientModal() {
+    document.getElementById('editClientModal').classList.add('hidden');
+  }
+
+  async function deleteClient(email, name) {
+    if (!confirm(`Are you sure you want to remove ${name}? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/admin/clients/${encodeURIComponent(email)}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        alert('Client removed successfully');
+        loadClients();
+      } else {
+        alert('Failed to remove client');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred');
+    }
+  }
+
+  // Handle edit client form submission
+  document.getElementById('editClientForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('editClientEmail').value;
+    const firstName = document.getElementById('editClientFirstName').value;
+    const lastName = document.getElementById('editClientLastName').value;
+    const phone = document.getElementById('editClientPhone').value;
+    const city = document.getElementById('editClientCity').value;
+    
+    try {
+      const response = await fetch(`/api/admin/clients/${encodeURIComponent(email)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, phone, city })
+      });
+      
+      if (response.ok) {
+        alert('Client updated successfully');
+        closeEditClientModal();
+        loadClients();
+      } else {
+        alert('Failed to update client');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred');
+    }
+  });
+
+  // Search functionality
+  document.getElementById('clientSearch')?.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filtered = allClients.filter(client => 
+      client.firstName.toLowerCase().includes(searchTerm) ||
+      client.lastName.toLowerCase().includes(searchTerm) ||
+      client.email.toLowerCase().includes(searchTerm)
+    );
+    displayClients(filtered);
+  });
+
+  // Close modals when clicking outside
+  document.getElementById('clientModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'clientModal') {
+      closeClientModal();
+    }
+  });
+
+  document.getElementById('editClientModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'editClientModal') {
+      closeEditClientModal();
+    }
+  });
+
+  // Notification Functions
+  let notificationInterval;
+
+  async function loadNotifications() {
+    try {
+      const response = await fetch('/api/notifications');
+      const data = await response.json();
+      
+      const notificationListEl = document.getElementById('notificationList');
+      
+      if (data.notifications.length === 0) {
+        notificationListEl.innerHTML = '<p class="text-center text-slate-500 text-sm py-8">No notifications</p>';
+      } else {
+        notificationListEl.innerHTML = data.notifications.map(notification => {
+          const timeAgo = getTimeAgo(new Date(notification.createdAt));
+          return `
+            <div class="p-3 rounded-lg ${notification.read ? 'bg-slate-50 dark:bg-slate-800' : 'bg-blue-50 dark:bg-blue-900/20 border border-primary/20'} cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onclick="markNotificationRead('${notification.id}')">
+              <p class="text-sm ${notification.read ? 'text-slate-600 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100 font-medium'}">${notification.message}</p>
+              <p class="text-xs text-slate-500 mt-1">${timeAgo}</p>
+            </div>
+          `;
+        }).join('');
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  }
+
+  async function loadNotificationCount() {
+    try {
+      const response = await fetch('/api/notifications/unread-count');
+      const data = await response.json();
+      
+      const badge = document.getElementById('notificationBadge');
+      if (data.unreadCount > 0) {
+        badge.textContent = data.unreadCount > 9 ? '9+' : data.unreadCount;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    } catch (error) {
+      console.error('Error loading notification count:', error);
+    }
+  }
+
+  async function markNotificationRead(notificationId) {
+    try {
+      await fetch(`/api/notifications/${notificationId}/read`, { method: 'POST' });
+      loadNotifications();
+      loadNotificationCount();
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  }
+
+  async function markAllRead() {
+    try {
+      await fetch('/api/notifications/mark-all-read', { method: 'POST' });
+      loadNotifications();
+      loadNotificationCount();
+    } catch (error) {
+      console.error('Error marking all as read:', error);
+    }
+  }
+
+  function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60
+    };
+    
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInUnit);
+      if (interval >= 1) {
+        return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+      }
+    }
+    return 'Just now';
+  }
+
+  function toggleNotificationPanel(e) {
+    e.stopPropagation();
+    const panel = document.getElementById('notificationPanel');
+    const chatPanel = document.getElementById('chatPanel');
+    
+    if (panel.classList.contains('hidden')) {
+      chatPanel.classList.add('hidden');
+      panel.classList.remove('hidden');
+      loadNotifications();
+    } else {
+      panel.classList.add('hidden');
+    }
+  }
+
+  function closeNotificationPanel() {
+    document.getElementById('notificationPanel').classList.add('hidden');
+  }
+
+  // Event Listeners
+  document.getElementById('notificationButton')?.addEventListener('click', toggleNotificationPanel);
+  document.getElementById('closeNotificationPanel')?.addEventListener('click', closeNotificationPanel);
+  document.getElementById('markAllReadBtn')?.addEventListener('click', markAllRead);
+
+  // Close panels when clicking outside
+  document.addEventListener('click', (e) => {
+    const notificationPanel = document.getElementById('notificationPanel');
+    const notificationButton = document.getElementById('notificationButton');
+    
+    if (!notificationPanel.contains(e.target) && !notificationButton.contains(e.target)) {
+      notificationPanel.classList.add('hidden');
+    }
+  });
+
+  // Service Form Builder - Universal service management
+  let currentService = null;
+  let currentStep = 1;
+  let editingFieldIndex = null;
+  let editingRuleIndex = null;
+
+  async function loadServices() {
+    try {
+      const response = await fetch('/api/services');
+      const data = await response.json();
+      
+      // Update active service banner
+      const activeService = data.services.find(s => s.id === data.activeServiceId);
+      document.getElementById('activeServiceName').textContent = activeService ? activeService.name : 'No active service';
+      
+      // Display services list
+      const servicesList = document.getElementById('servicesList');
+      servicesList.innerHTML = data.services.map(service => `
+        <div class="bg-white dark:bg-background-dark rounded-xl border ${service.id === data.activeServiceId ? 'border-blue-500 shadow-lg' : 'border-slate-200'} p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="text-lg font-bold mb-1">${service.name}</h4>
+              <p class="text-sm text-slate-500">${service.formFields.length} questions • ${service.pricingRules.length} pricing rules</p>
+              <p class="text-sm text-slate-400 mt-1">Base: $${service.basePrice} • ${service.duration} mins</p>
+            </div>
+            <div class="flex gap-2">
+              ${service.id === data.activeServiceId ? 
+                '<span class="px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-full">ACTIVE</span>' : 
+                `<button onclick="setActiveService('${service.id}')" class="px-3 py-1 border border-blue-600 text-blue-600 text-xs font-medium rounded-full hover:bg-blue-50">Set Active</button>`
+              }
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editService('${service.id}')" class="flex-1 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-sm font-medium flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-sm">edit</span>
+              <span>Edit</span>
+            </button>
+            ${service.id !== data.activeServiceId ? 
+              `<button onclick="deleteService('${service.id}')" class="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 text-sm font-medium">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>` : ''
+            }
+          </div>
+        </div>
+      `).join('');
+    } catch (error) {
+      console.error('Error loading services:', error);
+    }
+  }
+
+  function openServiceEditor(serviceId = null) {
+    if (serviceId) {
+      // Edit existing service
+      fetch(`/api/services/${serviceId}`)
+        .then(res => res.json())
+        .then(data => {
+          currentService = data.service;
+          currentStep = 1;
+          document.getElementById('serviceEditorModal').classList.remove('hidden');
+          renderEditorStep();
+        });
+    } else {
+      // Create new service
+      currentService = {
+        id: null,
+        name: '',
+        basePrice: 0,
+        duration: 60,
+        formFields: [],
+        pricingRules: [],
+        extras: []
+      };
+      currentStep = 1;
+      document.getElementById('serviceEditorModal').classList.remove('hidden');
+      renderEditorStep();
+    }
+  }
+
+  function closeServiceEditor() {
+    document.getElementById('serviceEditorModal').classList.add('hidden');
+    currentService = null;
+    currentStep = 1;
+  }
+
+  function editService(serviceId) {
+    openServiceEditor(serviceId);
+  }
+
+  async function setActiveService(serviceId) {
+    try {
+      const response = await fetch('/api/services/set-active', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ serviceId })
+      });
+      
+      if (response.ok) {
+        loadServices();
+      }
+    } catch (error) {
+      console.error('Error setting active service:', error);
+    }
+  }
+
+  async function deleteService(serviceId) {
+    if (!confirm('Are you sure you want to delete this service?')) return;
+
+    try {
+      const response = await fetch(`/api/services/${serviceId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        loadServices();
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Error deleting service');
+      }
+    } catch (error) {
+      console.error('Error deleting service:', error);
+    }
+  }
+
+  function renderEditorStep() {
+    const content = document.getElementById('editorContent');
+    const stepIndicator = document.getElementById('editorStepIndicator');
+    const btnPrevious = document.getElementById('btnPrevious');
+    const btnNext = document.getElementById('btnNext');
+    const btnSave = document.getElementById('btnSave');
+
+    // Update step indicators
+    document.querySelectorAll('.editor-step').forEach((step, index) => {
+      step.classList.remove('active', 'completed');
+      if (index + 1 === currentStep) {
+        step.classList.add('active');
+      } else if (index + 1 < currentStep) {
+        step.classList.add('completed');
+      }
+    });
+
+    // Update buttons
+    btnPrevious.disabled = currentStep === 1;
+    btnNext.classList.toggle('hidden', currentStep === 4);
+    btnSave.classList.toggle('hidden', currentStep !== 4);
+
+    // Render content based on step
+    switch(currentStep) {
+      case 1:
+        renderStep1_Basics();
+        stepIndicator.textContent = 'Step 1 of 4: Basics';
+        break;
+      case 2:
+        renderStep2_Questions();
+        stepIndicator.textContent = 'Step 2 of 4: Questions';
+        break;
+      case 3:
+        renderStep3_Pricing();
+        stepIndicator.textContent = 'Step 3 of 4: Pricing Rules';
+        break;
+      case 4:
+        renderStep4_Preview();
+        stepIndicator.textContent = 'Step 4 of 4: Preview';
+        break;
+    }
+  }
+
+  function renderStep1_Basics() {
+    const content = document.getElementById('editorContent');
+    content.innerHTML = `
+      <div class="max-w-2xl mx-auto space-y-6">
+        <div>
+          <h4 class="text-lg font-bold mb-4">Service Information</h4>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Service Name *</label>
+              <input type="text" id="serviceName" value="${currentService.name || ''}" placeholder="e.g., House Cleaning, Lawn Mowing, Car Detailing" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-2">Base Price ($) *</label>
+                <input type="number" id="serviceBasePrice" value="${currentService.basePrice || 0}" min="0" step="0.01" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary">
+                <p class="text-xs text-slate-500 mt-1">Starting price before any add-ons</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">Duration (minutes) *</label>
+                <input type="number" id="serviceDuration" value="${currentService.duration || 60}" min="15" step="15" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary">
+                <p class="text-xs text-slate-500 mt-1">Estimated service time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderStep2_Questions() {
+    const content = document.getElementById('editorContent');
+    content.innerHTML = `
+      <div class="space-y-6">
+        <div class="flex justify-between items-center">
+          <h4 class="text-lg font-bold">Form Questions</h4>
+          <button onclick="addFormField()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 flex items-center gap-2">
+            <span class="material-symbols-outlined">add</span>
+            <span>Add Question</span>
+          </button>
+        </div>
+
+        <div id="formFieldsList" class="space-y-3">
+          ${currentService.formFields.length === 0 ? 
+            '<p class="text-slate-400 text-center py-8">No questions yet. Add your first question above.</p>' :
+            currentService.formFields.map((field, index) => `
+              <div class="bg-slate-50 rounded-lg p-4">
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1">
+                    <p class="font-medium">${field.label}</p>
+                    <p class="text-sm text-slate-500">${field.fieldType.toUpperCase()} ${field.required ? '• Required' : ''}</p>
+                    ${field.options.length > 0 ? `<p class="text-xs text-slate-400 mt-1">Options: ${field.options.join(', ')}</p>` : ''}
+                  </div>
+                  <div class="flex gap-2">
+                    <button onclick="editFormField(${index})" class="px-2 py-1 border border-slate-300 rounded hover:bg-white text-sm">
+                      <span class="material-symbols-outlined text-sm">edit</span>
+                    </button>
+                    <button onclick="deleteFormField(${index})" class="px-2 py-1 border border-red-300 text-red-600 rounded hover:bg-red-50 text-sm">
+                      <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `).join('')
+          }
+        </div>
+      </div>
+
+      <!-- Add/Edit Field Modal -->
+      <div id="fieldEditorModal" class="hidden fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+          <h4 class="text-lg font-bold mb-4">Question Details</h4>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium mb-1">Question Label *</label>
+              <input type="text" id="fieldLabel" placeholder="e.g., How many rooms?" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Field Type *</label>
+              <select id="fieldType" onchange="toggleFieldOptions()" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <option value="dropdown">Dropdown</option>
+                <option value="checkbox">Checkbox</option>
+                <option value="multiselect">Multi-Select</option>
+              </select>
+            </div>
+            <div id="fieldOptionsContainer" class="hidden">
+              <label class="block text-sm font-medium mb-1">Options (one per line)</label>
+              <textarea id="fieldOptions" rows="4" placeholder="Option 1\nOption 2\nOption 3" class="w-full px-4 py-2 border border-slate-300 rounded-lg"></textarea>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="fieldRequired" class="w-4 h-4 text-primary rounded">
+              <label for="fieldRequired" class="text-sm font-medium">Required field</label>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-6">
+            <button onclick="closeFieldEditor()" class="flex-1 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50">Cancel</button>
+            <button onclick="saveFormField()" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600">Save</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderStep3_Pricing() {
+    const content = document.getElementById('editorContent');
+    const fieldOptions = currentService.formFields.map(f => `<option value="${f.id}">${f.label}</option>`).join('');
+    
+    // Initialize extras array if it doesn't exist
+    if (!currentService.extras) {
+      currentService.extras = [];
+    }
+    
+    content.innerHTML = `
+      <div class="space-y-6">
+        <div class="flex justify-between items-center">
+          <h4 class="text-lg font-bold">Pricing Rules</h4>
+          <button onclick="addPricingRule()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 flex items-center gap-2">
+            <span class="material-symbols-outlined">add</span>
+            <span>Add Rule</span>
+          </button>
+        </div>
+
+        <div id="pricingRulesList" class="space-y-3">
+          ${currentService.pricingRules.length === 0 ?
+            '<p class="text-slate-400 text-center py-8">No pricing rules yet. Add your first rule above.</p>' :
+            currentService.pricingRules.map((rule, index) => {
+              const field = currentService.formFields.find(f => f.id === rule.fieldId);
+              let ruleText = '';
+              if (rule.ruleType === 'add') {
+                ruleText = `Add $${rule.value} to total (always)`;
+              } else if (rule.ruleType === 'checkbox') {
+                ruleText = `Add $${rule.value} if ${field?.label || 'field'} is checked`;
+              } else if (rule.ruleType === 'multiply') {
+                ruleText = `Multiply ${field?.label || 'field'} by $${rule.value}`;
+              } else if (rule.ruleType === 'conditional') {
+                const conditions = Object.entries(rule.condition || {}).map(([k, v]) => `${k} = $${v}`).join(', ');
+                ruleText = `When ${field?.label || 'field'}: ${conditions}`;
+              }
+              return `
+                <div class="bg-slate-50 rounded-lg p-4">
+                  <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                      <p class="font-medium">${ruleText}</p>
+                      <p class="text-sm text-slate-500">${rule.ruleType.toUpperCase()} rule</p>
+                    </div>
+                    <div class="flex gap-2">
+                      <button onclick="editPricingRule(${index})" class="px-2 py-1 border border-slate-300 rounded hover:bg-white text-sm">
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                      </button>
+                      <button onclick="deletePricingRule(${index})" class="px-2 py-1 border border-red-300 text-red-600 rounded hover:bg-red-50 text-sm">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')
+          }
+        </div>
+
+        <!-- Extras Section -->
+        <div class="border-t border-slate-200 pt-6 mt-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h4 class="text-lg font-bold">Extras (Optional Add-ons)</h4>
+              <p class="text-sm text-slate-500">Checkbox items that add to the price</p>
+            </div>
+            <button onclick="addExtra()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2">
+              <span class="material-symbols-outlined">add</span>
+              <span>Add Extra</span>
+            </button>
+          </div>
+
+          <div id="extrasList" class="space-y-3">
+            ${currentService.extras.length === 0 ?
+              '<p class="text-slate-400 text-center py-8">No extras yet. Extras are optional.</p>' :
+              currentService.extras.map((extra, index) => `
+                <div class="bg-green-50 rounded-lg p-4">
+                  <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                      <p class="font-medium">${extra.label}</p>
+                      <p class="text-sm text-green-600">+$${extra.price}</p>
+                    </div>
+                    <div class="flex gap-2">
+                      <button onclick="editExtra(${index})" class="px-2 py-1 border border-slate-300 rounded hover:bg-white text-sm">
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                      </button>
+                      <button onclick="deleteExtra(${index})" class="px-2 py-1 border border-red-300 text-red-600 rounded hover:bg-red-50 text-sm">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `).join('')
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Add/Edit Pricing Rule Modal -->
+      <div id="ruleEditorModal" class="hidden fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+          <h4 class="text-lg font-bold mb-4">Pricing Rule</h4>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium mb-1">Field *</label>
+              <select id="ruleFieldId" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+                <option value="">Select a field</option>
+                ${fieldOptions}
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Rule Type *</label>
+              <select id="ruleType" onchange="toggleRuleInputs()" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+                <option value="add">Add Fixed Amount (always adds)</option>
+                <option value="checkbox">Add if Checkbox Checked</option>
+                <option value="multiply">Multiply by Number Field</option>
+                <option value="conditional">Conditional (based on dropdown)</option>
+              </select>
+            </div>
+            <div id="ruleValueContainer">
+              <label class="block text-sm font-medium mb-1">Value ($) *</label>
+              <input type="number" id="ruleValue" min="0" step="0.01" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+            </div>
+            <div id="ruleConditionContainer" class="hidden">
+              <label class="block text-sm font-medium mb-1">Conditions (option=price, one per line)</label>
+              <textarea id="ruleCondition" rows="4" placeholder="Option 1=50\nOption 2=100\nOption 3=150" class="w-full px-4 py-2 border border-slate-300 rounded-lg"></textarea>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-6">
+            <button onclick="closeRuleEditor()" class="flex-1 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50">Cancel</button>
+            <button onclick="savePricingRule()" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add/Edit Extra Modal -->
+      <div id="extraEditorModal" class="hidden fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+          <h4 class="text-lg font-bold mb-4">Extra Item</h4>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium mb-1">Label *</label>
+              <input type="text" id="extraLabel" placeholder="e.g., Pets in Home" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Price ($) *</label>
+              <input type="number" id="extraPrice" min="0" step="0.01" placeholder="0.00" class="w-full px-4 py-2 border border-slate-300 rounded-lg">
+            </div>
+          </div>
+          <div class="flex gap-3 mt-6">
+            <button onclick="closeExtraEditor()" class="flex-1 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50">Cancel</button>
+            <button onclick="saveExtra()" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Save</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderStep4_Preview() {
+    const content = document.getElementById('editorContent');
+    
+    // Generate preview HTML
+    const formHTML = currentService.formFields.map(field => {
+      let inputHTML = '';
+      if (field.fieldType === 'text') {
+        inputHTML = `<input type="text" class="w-full px-4 py-2 border border-slate-300 rounded-lg" placeholder="Enter ${field.label.toLowerCase()}">`;
+      } else if (field.fieldType === 'number') {
+        inputHTML = `<input type="number" class="w-full px-4 py-2 border border-slate-300 rounded-lg" placeholder="0" min="0">`;
+      } else if (field.fieldType === 'dropdown') {
+        const options = field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+        inputHTML = `<select class="w-full px-4 py-2 border border-slate-300 rounded-lg"><option value="">Select...</option>${options}</select>`;
+      } else if (field.fieldType === 'checkbox') {
+        inputHTML = '<input type="checkbox" class="w-4 h-4 text-primary rounded">';
+      } else if (field.fieldType === 'multiselect') {
+        const checkboxes = field.options.map(opt => `
+          <label class="flex items-center gap-2">
+            <input type="checkbox" class="w-4 h-4 text-primary rounded">
+            <span>${opt}</span>
+          </label>
+        `).join('');
+        inputHTML = `<div class="space-y-2">${checkboxes}</div>`;
+      }
+      
+      return `
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">${field.label}${field.required ? ' *' : ''}</label>
+          ${inputHTML}
+        </div>
+      `;
+    }).join('');
+
+    // Generate extras HTML for preview
+    const extrasHTML = currentService.extras && currentService.extras.length > 0 ? `
+      <div class="mt-6 pt-6 border-t border-slate-200">
+        <h4 class="text-sm font-semibold mb-3">Extras (Optional)</h4>
+        <div class="space-y-2">
+          ${currentService.extras.map(extra => `
+            <label class="flex items-center gap-3 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
+              <input type="checkbox" class="w-4 h-4 text-primary rounded" disabled>
+              <div class="flex-1">
+                <span class="text-sm font-medium">${extra.label}</span>
+                <span class="text-sm text-green-600 font-semibold ml-2">+$${extra.price}</span>
+              </div>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    ` : '';
+
+    content.innerHTML = `
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <h4 class="text-lg font-bold mb-4">Service Preview</h4>
+          <div class="bg-white border border-slate-200 rounded-xl p-6">
+            <h3 class="text-xl font-bold mb-2">${currentService.name || 'Untitled Service'}</h3>
+            <p class="text-sm text-slate-500 mb-4">Base Price: $${currentService.basePrice} • ${currentService.duration} minutes</p>
+            <div class="space-y-4">
+              ${formHTML || '<p class="text-slate-400 text-center py-8">No questions configured</p>'}
+            </div>
+            ${extrasHTML}
+          </div>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold mb-4">Pricing Summary</h4>
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-sm">Base Price</span>
+                <span class="font-medium">$${currentService.basePrice}</span>
+              </div>
+              ${currentService.pricingRules.map(rule => {
+                const field = currentService.formFields.find(f => f.id === rule.fieldId);
+                let ruleText = '';
+                if (rule.ruleType === 'add') {
+                  ruleText = `Fixed: +$${rule.value}`;
+                } else if (rule.ruleType === 'checkbox') {
+                  ruleText = `${field?.label || 'Field'} (if checked): +$${rule.value}`;
+                } else if (rule.ruleType === 'multiply') {
+                  ruleText = `${field?.label || 'Field'} × $${rule.value}`;
+                } else if (rule.ruleType === 'conditional') {
+                  ruleText = `${field?.label || 'Field'} (conditional)`;
+                }
+                return `
+                  <div class="flex justify-between text-sm text-slate-600">
+                    <span>${ruleText}</span>
+                    <span>Dynamic</span>
+                  </div>
+                `;
+              }).join('')}
+              ${currentService.extras && currentService.extras.length > 0 ? `
+                <div class="border-t border-blue-300 pt-2 mt-2">
+                  <p class="text-xs font-semibold text-slate-500 mb-1">Optional Extras:</p>
+                  ${currentService.extras.map(extra => `
+                    <div class="flex justify-between text-sm text-green-600">
+                      <span>${extra.label}</span>
+                      <span>+$${extra.price}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+              <div class="border-t border-blue-300 pt-2 mt-2">
+                <div class="flex justify-between font-bold">
+                  <span>Total</span>
+                  <span class="text-primary">Calculated at booking</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 p-4 bg-slate-50 rounded-lg">
+            <p class="text-sm font-medium mb-2">Configuration Summary:</p>
+            <ul class="text-sm text-slate-600 space-y-1">
+              <li>• ${currentService.formFields.length} questions</li>
+              <li>• ${currentService.pricingRules.length} pricing rules</li>
+              <li>• ${currentService.extras ? currentService.extras.length : 0} optional extras</li>
+              <li>• ${currentService.formFields.filter(f => f.required).length} required fields</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Step navigation
+  function nextEditorStep() {
+    // Validate current step
+    if (currentStep === 1) {
+      const name = document.getElementById('serviceName').value.trim();
+      const basePrice = document.getElementById('serviceBasePrice').value;
+      const duration = document.getElementById('serviceDuration').value;
+      
+      if (!name) {
+        alert('Please enter a service name');
+        return;
+      }
+      
+      currentService.name = name;
+      currentService.basePrice = parseFloat(basePrice) || 0;
+      currentService.duration = parseInt(duration) || 60;
+    }
+    
+    if (currentStep < 4) {
+      currentStep++;
+      renderEditorStep();
+    }
+  }
+
+  function previousEditorStep() {
+    if (currentStep > 1) {
+      currentStep--;
+      renderEditorStep();
+    }
+  }
+
+  // Form field management
+  function addFormField() {
+    editingFieldIndex = null;
+    document.getElementById('fieldEditorModal').classList.remove('hidden');
+    document.getElementById('fieldLabel').value = '';
+    document.getElementById('fieldType').value = 'text';
+    document.getElementById('fieldOptions').value = '';
+    document.getElementById('fieldRequired').checked = false;
+    toggleFieldOptions();
+  }
+
+  function editFormField(index) {
+    editingFieldIndex = index;
+    const field = currentService.formFields[index];
+    document.getElementById('fieldEditorModal').classList.remove('hidden');
+    document.getElementById('fieldLabel').value = field.label;
+    document.getElementById('fieldType').value = field.fieldType;
+    document.getElementById('fieldOptions').value = field.options.join('\n');
+    document.getElementById('fieldRequired').checked = field.required;
+    toggleFieldOptions();
+  }
+
+  function saveFormField() {
+    const label = document.getElementById('fieldLabel').value.trim();
+    const fieldType = document.getElementById('fieldType').value;
+    const optionsText = document.getElementById('fieldOptions').value;
+    const required = document.getElementById('fieldRequired').checked;
+    
+    if (!label) {
+      alert('Please enter a question label');
+      return;
+    }
+    
+    const options = ['dropdown', 'multiselect'].includes(fieldType) 
+      ? optionsText.split('\n').map(o => o.trim()).filter(o => o)
+      : [];
+    
+    const field = {
+      id: editingFieldIndex !== null ? currentService.formFields[editingFieldIndex].id : Date.now().toString(),
+      label,
+      fieldType,
+      options,
+      required
+    };
+    
+    if (editingFieldIndex !== null) {
+      currentService.formFields[editingFieldIndex] = field;
+    } else {
+      currentService.formFields.push(field);
+    }
+    
+    closeFieldEditor();
+    renderStep2_Questions();
+  }
+
+  function deleteFormField(index) {
+    if (!confirm('Delete this question?')) return;
+    currentService.formFields.splice(index, 1);
+    renderStep2_Questions();
+  }
+
+  function closeFieldEditor() {
+    document.getElementById('fieldEditorModal').classList.add('hidden');
+  }
+
+  function toggleFieldOptions() {
+    const fieldType = document.getElementById('fieldType').value;
+    const container = document.getElementById('fieldOptionsContainer');
+    container.classList.toggle('hidden', !['dropdown', 'multiselect'].includes(fieldType));
+  }
+
+  // Pricing rule management
+  function addPricingRule() {
+    editingRuleIndex = null;
+    document.getElementById('ruleEditorModal').classList.remove('hidden');
+    document.getElementById('ruleFieldId').value = '';
+    document.getElementById('ruleType').value = 'add';
+    document.getElementById('ruleValue').value = '';
+    document.getElementById('ruleCondition').value = '';
+    toggleRuleInputs();
+  }
+
+  function editPricingRule(index) {
+    editingRuleIndex = index;
+    const rule = currentService.pricingRules[index];
+    document.getElementById('ruleEditorModal').classList.remove('hidden');
+    document.getElementById('ruleFieldId').value = rule.fieldId;
+    document.getElementById('ruleType').value = rule.ruleType;
+    document.getElementById('ruleValue').value = rule.value || '';
+    
+    if (rule.condition) {
+      const condText = Object.entries(rule.condition).map(([k, v]) => `${k}=${v}`).join('\n');
+      document.getElementById('ruleCondition').value = condText;
+    }
+    
+    toggleRuleInputs();
+  }
+
+  function savePricingRule() {
+    const fieldId = document.getElementById('ruleFieldId').value;
+    const ruleType = document.getElementById('ruleType').value;
+    const value = parseFloat(document.getElementById('ruleValue').value) || 0;
+    const conditionText = document.getElementById('ruleCondition').value;
+    
+    if (!fieldId) {
+      alert('Please select a field');
+      return;
+    }
+    
+    const rule = {
+      id: editingRuleIndex !== null ? currentService.pricingRules[editingRuleIndex].id : Date.now().toString(),
+      fieldId,
+      ruleType,
+      value: ruleType === 'conditional' ? 0 : value
+    };
+    
+    if (ruleType === 'conditional') {
+      const conditions = {};
+      conditionText.split('\n').forEach(line => {
+        const [key, val] = line.split('=').map(s => s.trim());
+        if (key && val) conditions[key] = parseFloat(val) || 0;
+      });
+      rule.condition = conditions;
+    }
+    
+    if (editingRuleIndex !== null) {
+      currentService.pricingRules[editingRuleIndex] = rule;
+    } else {
+      currentService.pricingRules.push(rule);
+    }
+    
+    closeRuleEditor();
+    renderStep3_Pricing();
+  }
+
+  function deletePricingRule(index) {
+    if (!confirm('Delete this pricing rule?')) return;
+    currentService.pricingRules.splice(index, 1);
+    renderStep3_Pricing();
+  }
+
+  function closeRuleEditor() {
+    document.getElementById('ruleEditorModal').classList.add('hidden');
+  }
+
+  function toggleRuleInputs() {
+    const ruleType = document.getElementById('ruleType').value;
+    document.getElementById('ruleValueContainer').classList.toggle('hidden', ruleType === 'conditional');
+    document.getElementById('ruleConditionContainer').classList.toggle('hidden', ruleType !== 'conditional');
+  }
+
+  // Extras Management Functions
+  let currentExtraIndex = null;
+
+  function addExtra() {
+    currentExtraIndex = null;
+    document.getElementById('extraEditorModal').classList.remove('hidden');
+    document.getElementById('extraLabel').value = '';
+    document.getElementById('extraPrice').value = '';
+  }
+
+  function editExtra(index) {
+    currentExtraIndex = index;
+    const extra = currentService.extras[index];
+    document.getElementById('extraEditorModal').classList.remove('hidden');
+    document.getElementById('extraLabel').value = extra.label;
+    document.getElementById('extraPrice').value = extra.price;
+  }
+
+  function saveExtra() {
+    const label = document.getElementById('extraLabel').value.trim();
+    const price = parseFloat(document.getElementById('extraPrice').value);
+
+    if (!label || isNaN(price) || price < 0) {
+      alert('Please fill in all fields correctly');
+      return;
+    }
+
+    const extraData = {
+      id: currentExtraIndex !== null ? currentService.extras[currentExtraIndex].id : `extra-${Date.now()}`,
+      label: label,
+      price: price
+    };
+
+    if (currentExtraIndex !== null) {
+      currentService.extras[currentExtraIndex] = extraData;
+    } else {
+      currentService.extras.push(extraData);
+    }
+
+    closeExtraEditor();
+    renderStep3_Pricing();
+  }
+
+  function deleteExtra(index) {
+    if (!confirm('Delete this extra item?')) return;
+    currentService.extras.splice(index, 1);
+    renderStep3_Pricing();
+  }
+
+  function closeExtraEditor() {
+    document.getElementById('extraEditorModal').classList.add('hidden');
+  }
+
+  // Save service
+  async function saveService() {
+    try {
+      const method = currentService.id ? 'PUT' : 'POST';
+      const url = currentService.id ? `/api/services/${currentService.id}` : '/api/services/create';
+      
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentService)
+      });
+      
+      if (response.ok) {
+        closeServiceEditor();
+        loadServices();
+        alert('Service saved successfully!');
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Error saving service');
+      }
+    } catch (error) {
+      console.error('Error saving service:', error);
+      alert('Error saving service');
+    }
+  }
+
+  // Load bookings, clients, services, and notifications when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    loadBookings();
+    loadClients();
+    loadServices();
+    loadNotificationCount();
+    // Poll for new notifications every 30 seconds
+    notificationInterval = setInterval(loadNotificationCount, 30000);
+  });
+
+  // Clean up interval on page unload
+  window.addEventListener('beforeunload', () => {
+    if (notificationInterval) {
+      clearInterval(notificationInterval);
+    }
+  });
+
+  checkAuth();
+</script>
+</body>
+</html>

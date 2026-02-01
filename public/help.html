@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Help Center - ServicePro</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#256af4",
+            "background-light": "#f5f6f8",
+            "background-dark": "#101622",
+            "navy-sidebar": "#0f172a"
+          },
+          fontFamily: {
+            "display": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-white">
+  <div class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800">
+      <div class="max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="size-10 bg-primary rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-white">handyman</span>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold">ServicePro</h1>
+            <p class="text-xs text-slate-500">Help Center</p>
+          </div>
+        </div>
+        <button onclick="goBack()" class="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+          <span class="text-sm font-medium">Back to Dashboard</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-8 py-12">
+      <!-- Hero Section -->
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+          <span class="material-symbols-outlined text-primary text-3xl">support_agent</span>
+        </div>
+        <h2 class="text-4xl font-bold mb-3">How can we help you?</h2>
+        <p class="text-lg text-slate-500 max-w-2xl mx-auto">Find answers to common questions or get in touch with our support team</p>
+      </div>
+
+      <!-- Quick Help Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
+          <div class="size-12 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-primary mb-4">
+            <span class="material-symbols-outlined">mail</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Email Support</h3>
+          <p class="text-sm text-slate-500 mb-4">Get help via email within 24 hours</p>
+          <a href="mailto:support@servicepro.com" class="text-primary font-semibold text-sm hover:underline flex items-center gap-1">
+            support@servicepro.com
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
+          <div class="size-12 bg-green-50 dark:bg-green-900/20 rounded-lg flex items-center justify-center text-green-600 mb-4">
+            <span class="material-symbols-outlined">chat_bubble</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Live Chat</h3>
+          <p class="text-sm text-slate-500 mb-4">Use the chat feature in your dashboard</p>
+          <button onclick="goBack()" class="text-primary font-semibold text-sm hover:underline flex items-center gap-1">
+            Go to Dashboard
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
+          <div class="size-12 bg-orange-50 dark:bg-orange-900/20 rounded-lg flex items-center justify-center text-orange-500 mb-4">
+            <span class="material-symbols-outlined">call</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Phone Support</h3>
+          <p class="text-sm text-slate-500 mb-4">Mon-Fri, 9AM-5PM EST</p>
+          <a href="tel:+15551234567" class="text-primary font-semibold text-sm hover:underline flex items-center gap-1">
+            (555) 123-4567
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="bg-white dark:bg-background-dark rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-12">
+        <div class="px-8 py-6 border-b border-slate-200 dark:border-slate-800">
+          <h3 class="text-2xl font-bold">Frequently Asked Questions</h3>
+        </div>
+        <div class="divide-y divide-slate-200 dark:divide-slate-800">
+          <details class="group px-8 py-6">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="font-semibold text-lg">How do I schedule a service?</span>
+              <span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <p class="mt-4 text-slate-600 dark:text-slate-400">Navigate to your dashboard and click on "Book Service" or "Schedule" from the menu. Fill in the required details about your service needs, select a date and time, and submit your request. You'll receive a confirmation once a professional is assigned.</p>
+          </details>
+
+          <details class="group px-8 py-6">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="font-semibold text-lg">How do I contact a staff member?</span>
+              <span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <p class="mt-4 text-slate-600 dark:text-slate-400">Use the chat feature in your dashboard by clicking the chat icon in the top-right corner. Enter the staff member's email address to start a conversation. All messages are saved and you'll receive notifications when they reply.</p>
+          </details>
+
+          <details class="group px-8 py-6">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="font-semibold text-lg">How do I update my profile information?</span>
+              <span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <p class="mt-4 text-slate-600 dark:text-slate-400">Go to the Profile section in your dashboard menu. Click on the profile icon in the top-right corner to view your current information. Profile editing features will be available soon.</p>
+          </details>
+
+          <details class="group px-8 py-6">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="font-semibold text-lg">What payment methods do you accept?</span>
+              <span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <p class="mt-4 text-slate-600 dark:text-slate-400">We accept all major credit cards, debit cards, and digital payment methods. Payment information can be securely stored in your account for future bookings. Contact us for corporate billing options.</p>
+          </details>
+
+          <details class="group px-8 py-6">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="font-semibold text-lg">How do I reset my password?</span>
+              <span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <p class="mt-4 text-slate-600 dark:text-slate-400">Staff members can change their password in the Settings section of their dashboard. For clients and admins, password reset functionality will be available soon. In the meantime, contact support@servicepro.com for password assistance.</p>
+          </details>
+
+          <details class="group px-8 py-6">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="font-semibold text-lg">What are your service hours?</span>
+              <span class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <p class="mt-4 text-slate-600 dark:text-slate-400">Our platform is available 24/7 for booking and managing services. Service professionals are available Monday through Saturday, 8AM-6PM local time. Emergency services are available for an additional fee.</p>
+          </details>
+        </div>
+      </div>
+
+      <!-- Contact Card -->
+      <div class="bg-gradient-to-br from-primary to-blue-600 rounded-xl p-8 text-white text-center">
+        <span class="material-symbols-outlined text-5xl mb-4">contact_support</span>
+        <h3 class="text-2xl font-bold mb-2">Still need help?</h3>
+        <p class="text-blue-100 mb-6 max-w-2xl mx-auto">Our support team is here to help you with any questions or issues you may have</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="mailto:support@servicepro.com" class="bg-white text-primary font-bold py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined">mail</span>
+            <span>Email Support</span>
+          </a>
+          <button onclick="goBack()" class="bg-white/10 border-2 border-white text-white font-bold py-3 px-6 rounded-lg hover:bg-white/20 transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span>Back to Dashboard</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 mt-12">
+      <div class="max-w-6xl mx-auto px-8 py-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <p class="text-sm text-slate-500">© 2024 ServicePro Inc. All rights reserved.</p>
+          <div class="flex items-center gap-6 text-sm text-slate-500">
+            <a href="#" class="hover:text-primary transition-colors">Terms of Service</a>
+            <a href="#" class="hover:text-primary transition-colors">Privacy Policy</a>
+            <a href="mailto:support@servicepro.com" class="hover:text-primary transition-colors">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function goBack() {
+      // Check if there's a referrer from our site
+      if (document.referrer && document.referrer.includes(window.location.hostname)) {
+        window.history.back();
+      } else {
+        // Default to home/login if no valid referrer
+        window.location.href = '/';
+      }
+    }
+
+    // Optional: Check if user is logged in
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/session');
+        const data = await response.json();
+        
+        if (!data.loggedIn) {
+          // Optionally redirect to login if not authenticated
+          // window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+      }
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>

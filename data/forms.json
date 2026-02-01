@@ -1,0 +1,63 @@
+{
+  "activeFormId": "cleaning",
+  "forms": [
+    {
+      "id": "cleaning",
+      "name": "Cleaning Service",
+      "createdAt": "2026-01-31T21:29:59.814Z",
+      "options": [
+        {
+          "id": "rooms",
+          "name": "Room Clean",
+          "type": "number",
+          "pricePerUnit": 30,
+          "unit": "room"
+        },
+        {
+          "id": "washrooms",
+          "name": "Washroom",
+          "type": "number",
+          "pricePerUnit": 35,
+          "unit": "washroom"
+        },
+        {
+          "id": "halfWashrooms",
+          "name": "Half Washroom",
+          "type": "number",
+          "pricePerUnit": 15,
+          "unit": "half washroom"
+        },
+        {
+          "id": "sqft",
+          "name": "Square Footage",
+          "type": "range",
+          "pricePerUnit": 60,
+          "unit": "500 sq/ft",
+          "minimum": 150,
+          "note": "$60 per 500 sq/ft, minimum $150"
+        }
+      ]
+    },
+    {
+      "id": "1769895086796",
+      "name": "Carpentry",
+      "createdAt": "2026-01-31T21:31:26.796Z",
+      "options": [
+        {
+          "id": "1769895118630",
+          "name": "Roof Tile Removal",
+          "type": "number",
+          "pricePerUnit": 50,
+          "unit": "50 tiles"
+        },
+        {
+          "id": "1769895135417",
+          "name": "Gutter Cleaning",
+          "type": "number",
+          "pricePerUnit": 120,
+          "unit": "Gutter"
+        }
+      ]
+    }
+  ]
+}

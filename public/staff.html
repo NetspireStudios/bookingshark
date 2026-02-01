@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Staff Dashboard - ServicePro</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#256af4",
+            "background-light": "#f5f6f8",
+            "background-dark": "#101622",
+            "navy-sidebar": "#0f172a"
+          },
+          fontFamily: {
+            "display": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .section-content { display: none; }
+    .section-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-white">
+<div class="flex h-screen overflow-hidden">
+  <!-- Side Navigation Bar -->
+  <aside class="w-72 bg-navy-sidebar text-white flex flex-col h-full border-r border-navy-sidebar/50">
+    <div class="p-6">
+      <!-- Brand / Logo -->
+      <div class="flex items-center gap-3 mb-8">
+        <div class="size-10 bg-primary rounded-lg flex items-center justify-center">
+          <span class="material-symbols-outlined text-white">badge</span>
+        </div>
+        <div class="flex flex-col">
+          <h1 class="text-white text-lg font-bold leading-none">ServicePro</h1>
+          <p class="text-slate-400 text-xs mt-1">Staff Portal</p>
+        </div>
+      </div>
+      
+      <!-- Nav Links -->
+      <nav class="flex flex-col gap-1">
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white" href="#" data-section="dashboard">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="text-sm font-medium">Dashboard</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="schedule">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span class="text-sm font-medium">My Schedule</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="profile">
+          <span class="material-symbols-outlined">account_circle</span>
+          <span class="text-sm font-medium">Profile</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="settings">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="text-sm font-medium">Settings</span>
+        </a>
+      </nav>
+    </div>
+    
+    <!-- Sidebar Footer -->
+    <div class="mt-auto p-6 border-t border-white/10">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="size-8 bg-primary/20 rounded-full flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg text-primary">person</span>
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-xs font-medium truncate" id="userName">Staff User</p>
+          <p class="text-[10px] text-slate-500 truncate" id="userEmail">staff@servicepro.com</p>
+        </div>
+      </div>
+      <button onclick="logout()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span class="text-sm">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- Top Nav Bar -->
+    <header class="h-16 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
+      <div class="flex items-center gap-6">
+        <h2 class="text-xl font-bold text-[#111318] dark:text-white tracking-tight" id="pageTitle">Staff Dashboard</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- Chat Button -->
+        <button id="chatButton" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg relative">
+          <span class="material-symbols-outlined">chat_bubble</span>
+          <span id="chatNotificationBadge" class="hidden absolute top-1 right-1 size-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold"></span>
+        </button>
+        <!-- Help Button -->
+        <a href="help.html" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg transition-colors">
+          <span class="material-symbols-outlined">help_outline</span>
+        </a>
+        <!-- Notifications Button -->
+        <button id="notificationButton" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg relative">
+          <span class="material-symbols-outlined">notifications</span>
+          <span id="notificationBadge" class="hidden absolute top-1 right-1 size-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold"></span>
+        </button>
+        <!-- Profile Button -->
+        <div class="relative">
+          <button id="profileButton" class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined">person</span>
+          </button>
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50">
+            <div class="px-4 py-3">
+              <p class="text-sm font-semibold" id="profileName">Staff User</p>
+              <p class="text-xs text-slate-500" id="profileEmail">staff@servicepro.com</p>
+              <p class="text-xs text-primary font-medium mt-1" id="profileStatus">Staff Member</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chat Panel -->
+    <div id="chatPanel" class="hidden fixed right-8 top-20 w-96 h-[600px] bg-white dark:bg-background-dark rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col z-50">
+      <!-- Chat Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="font-bold text-lg">Messages</h3>
+        <button id="closeChatPanel" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+          <span class="material-symbols-outlined text-slate-500">close</span>
+        </button>
+      </div>
+      
+      <!-- Chat List View -->
+      <div id="chatListView" class="flex-1 flex flex-col overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800">
+          <button id="startNewChatBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span>New Chat</span>
+          </button>
+        </div>
+        <div id="chatList" class="flex-1 overflow-y-auto">
+          <p class="text-center text-slate-400 py-8 text-sm">Loading...</p>
+        </div>
+      </div>
+
+      <!-- New Chat View -->
+      <div id="newChatView" class="hidden flex-1 flex flex-col p-6">
+        <h4 class="font-semibold mb-4">Start New Chat</h4>
+        <form id="newChatForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Enter User Email</label>
+            <input type="email" id="newChatEmail" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="user@example.com">
+            <p id="newChatError" class="text-red-500 text-xs mt-1"></p>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold py-2 rounded-lg transition-colors">Start Chat</button>
+            <button type="button" id="cancelNewChat" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition-colors">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Chat View -->
+      <div id="chatView" class="hidden flex-1 flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <button id="backToChats" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+            <span class="material-symbols-outlined text-slate-500">arrow_back</span>
+          </button>
+          <div>
+            <p class="font-semibold text-sm" id="chatUserName">User</p>
+          </div>
+        </div>
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3">
+          <!-- Messages will be loaded here -->
+        </div>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="flex gap-2">
+            <input type="text" id="messageInput" placeholder="Type a message..." class="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            <button id="sendMessageBtn" class="bg-primary hover:bg-primary/90 text-white p-2 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notificationPanel" class="hidden fixed right-8 top-20 w-96 max-h-[600px] bg-white dark:bg-background-dark rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col z-50">
+      <!-- Notification Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="font-bold text-lg">Notifications</h3>
+        <div class="flex items-center gap-2">
+          <button id="markAllReadBtn" class="text-xs text-primary hover:text-blue-600 font-medium">Mark all read</button>
+          <button id="closeNotificationPanel" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+            <span class="material-symbols-outlined text-slate-500">close</span>
+          </button>
+        </div>
+      </div>
+      <!-- Notification List -->
+      <div id="notificationList" class="flex-1 overflow-y-auto p-4 space-y-2">
+        <p class="text-center text-slate-500 text-sm py-8">No notifications</p>
+      </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="p-8">
+      
+      <!-- Dashboard Section -->
+      <div id="dashboard-section" class="section-content active">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Welcome, <span id="userFullName"></span>!</h3>
+          <p class="text-slate-500">Here's your staff dashboard</p>
+        </div>
+        
+        <!-- Profile Info Card -->
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 mb-6">
+          <h4 class="font-bold text-lg mb-4">My Information</h4>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div>
+              <p class="text-xs text-slate-500 font-medium mb-1">Full Name</p>
+              <p class="text-base font-semibold" id="profileFullName"></p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 font-medium mb-1">Email</p>
+              <p class="text-base font-semibold" id="profileEmail"></p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 font-medium mb-1">Phone</p>
+              <p class="text-base font-semibold" id="profilePhone"></p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 font-medium mb-1">Location</p>
+              <p class="text-base font-semibold" id="profileLocation"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+            <div class="size-12 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">check_circle</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-slate-500">Jobs Completed</p>
+              <p class="text-2xl font-bold"><span id="completedJobsCount">0</span> Jobs</p>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+            <div class="size-12 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+              <span class="material-symbols-outlined">schedule</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-slate-500">Total Hours Worked</p>
+              <p class="text-2xl font-bold"><span id="totalHoursCount">0</span> hrs</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule Section -->
+      <div id="schedule-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">My Schedule</h3>
+          <p class="text-slate-500">View your assigned service bookings</p>
+        </div>
+
+        <!-- Pending Booking Requests -->
+        <div class="mb-6">
+          <h4 class="text-lg font-bold mb-3">Pending Requests</h4>
+          <div id="pendingRequestsList" class="space-y-3">
+            <!-- Pending requests will be loaded here -->
+          </div>
+          <div id="noPendingRequests" class="hidden bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-center">
+            <span class="material-symbols-outlined text-blue-600 mb-2">check_circle</span>
+            <p class="text-sm text-blue-600">No pending requests at this time</p>
+          </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="bg-white dark:bg-background-dark rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h4 class="text-lg font-bold">My Calendar</h4>
+            <div class="flex items-center gap-2">
+              <button onclick="previousMonthStaff()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                <span class="material-symbols-outlined">chevron_left</span>
+              </button>
+              <span class="text-lg font-semibold min-w-[180px] text-center" id="currentMonthYearStaff"></span>
+              <button onclick="nextMonthStaff()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Calendar Grid -->
+          <div class="grid grid-cols-7 gap-2 mb-2">
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Sun</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Mon</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Tue</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Wed</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Thu</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Fri</div>
+            <div class="text-center text-xs font-semibold text-slate-500 py-2">Sat</div>
+          </div>
+          <div id="calendarGridStaff" class="grid grid-cols-7 gap-2">
+            <!-- Calendar days will be generated here -->
+          </div>
+
+          <!-- Color Legend -->
+          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
+            <p class="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Status Colors:</p>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded bg-blue-500"></div>
+                <span class="text-xs text-slate-600 dark:text-slate-400">Scheduled (Accepted)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded bg-green-500"></div>
+                <span class="text-xs text-slate-600 dark:text-slate-400">Completed</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 mt-3">
+              <span class="material-symbols-outlined text-xs align-middle">info</span>
+              Pending requests appear in the section above and are not shown on the calendar until accepted.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Booking Details Modal (Staff View) -->
+      <div id="staffBookingModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-background-dark rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <h3 class="text-xl font-bold">Booking Details</h3>
+            <button onclick="closeStaffBookingModal()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <div id="staffBookingDetails" class="p-6">
+            <!-- Booking details will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Section -->
+      <div id="profile-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">My Profile</h3>
+          <p class="text-slate-500">View and manage your profile</p>
+        </div>
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+          <div class="flex items-start gap-6 mb-6">
+            <div class="size-20 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-4xl">person</span>
+            </div>
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-xs text-slate-500 font-medium mb-1">Full Name</p>
+                <p class="text-base font-semibold" id="profileFullName2"></p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium mb-1">Email</p>
+                <p class="text-base font-semibold" id="profileEmail2"></p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium mb-1">Phone</p>
+                <p class="text-base font-semibold" id="profilePhone2"></p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium mb-1">Location</p>
+                <p class="text-base font-semibold" id="profileLocation2"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Section -->
+      <div id="settings-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Settings</h3>
+          <p class="text-slate-500">Manage your account settings</p>
+        </div>
+        
+        <!-- Change Password -->
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+          <h4 class="font-bold text-lg mb-4">Change Password</h4>
+          <div id="passwordMessage" class="mb-4"></div>
+          
+          <form id="changePasswordForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Current Password</label>
+              <input type="password" id="oldPassword" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">New Password</label>
+              <input type="password" id="newPassword" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Confirm New Password</label>
+              <input type="password" id="newPasswordConfirm" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            </div>
+            
+            <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 transition-colors">
+              <span class="material-symbols-outlined">lock_reset</span>
+              <span>Change Password</span>
+            </button>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<script src="chat-component.js"></script>
+<script>
+  async function checkAuth() {
+    const response = await fetch('/api/session');
+    const data = await response.json();
+    
+    if (!data.loggedIn || data.user.userType !== 'staff') {
+      window.location.href = '/';
+      return;
+    }
+    
+    const fullName = `${data.user.firstName} ${data.user.lastName}`;
+    document.getElementById('userName').textContent = data.user.firstName;
+    document.getElementById('userEmail').textContent = data.user.email;
+    document.getElementById('userFullName').textContent = fullName;
+    document.getElementById('profileFullName').textContent = fullName;
+    document.getElementById('profileEmail').textContent = data.user.email;
+    document.getElementById('profilePhone').textContent = data.user.phone;
+    document.getElementById('profileLocation').textContent = data.user.location;
+    document.getElementById('profileFullName2').textContent = fullName;
+    document.getElementById('profileEmail2').textContent = data.user.email;
+    document.getElementById('profilePhone2').textContent = data.user.phone;
+    document.getElementById('profileLocation2').textContent = data.user.location;
+    document.getElementById('profileName').textContent = fullName;
+    document.getElementById('profileStatus').textContent = 'Staff Member';
+  }
+
+  async function logout() {
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/';
+  }
+
+  // Navigation
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const section = link.dataset.section;
+      
+      // Update active nav
+      document.querySelectorAll('.nav-link').forEach(l => {
+        l.classList.remove('bg-primary', 'text-white');
+        l.classList.add('text-slate-400');
+      });
+      link.classList.add('bg-primary', 'text-white');
+      link.classList.remove('text-slate-400');
+      
+      // Show section
+      document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+      document.getElementById(`${section}-section`).classList.add('active');
+      
+      // Update title
+      const titles = {
+        dashboard: 'Staff Dashboard',
+        schedule: 'My Schedule',
+        profile: 'My Profile',
+        settings: 'Settings'
+      };
+      document.getElementById('pageTitle').textContent = titles[section] || 'Staff Dashboard';
+    });
+  });
+
+  function showMessage(message, isError) {
+    const messageEl = document.getElementById('passwordMessage');
+    messageEl.innerHTML = `<div class="px-4 py-3 rounded-lg ${isError ? 'bg-red-50 text-red-800 border border-red-200' : 'bg-green-50 text-green-800 border border-green-200'} text-sm font-medium">${message}</div>`;
+    setTimeout(() => {
+      messageEl.innerHTML = '';
+    }, 3000);
+  }
+
+  document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const oldPassword = document.getElementById('oldPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const newPasswordConfirm = document.getElementById('newPasswordConfirm').value;
+    
+    if (newPassword !== newPasswordConfirm) {
+      showMessage('New passwords do not match', true);
+      return;
+    }
+    
+    if (newPassword.length < 6) {
+      showMessage('New password must be at least 6 characters', true);
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/staff/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ oldPassword, newPassword })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        showMessage('Password changed successfully!', false);
+        document.getElementById('changePasswordForm').reset();
+      } else {
+        showMessage(data.error, true);
+      }
+    } catch (error) {
+      showMessage('An error occurred. Please try again.', true);
+    }
+  });
+
+  // Staff Booking Functions
+  let staffBookings = [];
+  let currentDateStaff = new Date();
+
+  async function loadStaffBookings() {
+    try {
+      const response = await fetch('/api/bookings/all');
+      const data = await response.json();
+      staffBookings = data.bookings;
+      
+      // Separate pending requests from accepted bookings
+      const pendingRequests = staffBookings.filter(b => b.status === 'pending_acceptance');
+      const acceptedBookings = staffBookings.filter(b => b.status === 'accepted' || b.status === 'completed');
+      
+      // Render pending requests
+      const pendingRequestsEl = document.getElementById('pendingRequestsList');
+      const noPendingEl = document.getElementById('noPendingRequests');
+      
+      if (pendingRequests.length === 0) {
+        pendingRequestsEl.innerHTML = '';
+        noPendingEl.classList.remove('hidden');
+      } else {
+        noPendingEl.classList.add('hidden');
+        pendingRequestsEl.innerHTML = pendingRequests.map(booking => {
+          const date = new Date(booking.serviceDate);
+          const formattedDate = date.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+          
+          return `
+            <div class="bg-white dark:bg-background-dark rounded-xl border-2 border-orange-500 p-5 hover:shadow-lg transition-shadow">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg mb-1">${booking.client.firstName} ${booking.client.lastName}</h4>
+                  <p class="text-sm text-slate-500">${booking.client.email}</p>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400">Pending Response</span>
+              </div>
+              <div class="space-y-2 text-sm mb-3">
+                <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                  <span class="material-symbols-outlined text-sm">event</span>
+                  <span>${formattedDate}</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                  <span class="material-symbols-outlined text-sm">schedule</span>
+                  <span>${booking.frequency.charAt(0).toUpperCase() + booking.frequency.slice(1)}</span>
+                </div>
+              </div>
+              <div class="flex gap-2 mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
+                <button onclick="acceptBooking('${booking.id}')" class="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors text-sm flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-sm">check_circle</span>
+                  <span>Accept</span>
+                </button>
+                <button onclick="declineBooking('${booking.id}')" class="flex-1 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg font-medium transition-colors text-sm flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-sm">cancel</span>
+                  <span>Decline</span>
+                </button>
+                <button onclick="openStaffBookingModal('${booking.id}')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium transition-colors text-sm">
+                  Details
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      
+      // Render calendar with accepted bookings
+      renderStaffCalendar();
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+    }
+  }
+
+  function renderStaffCalendar() {
+    const year = currentDateStaff.getFullYear();
+    const month = currentDateStaff.getMonth();
+    
+    // Update header
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    document.getElementById('currentMonthYearStaff').textContent = `${monthNames[month]} ${year}`;
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    const calendarGrid = document.getElementById('calendarGridStaff');
+    calendarGrid.innerHTML = '';
+    
+    // Filter only accepted bookings
+    const acceptedBookings = staffBookings.filter(b => b.status === 'accepted' || b.status === 'completed');
+    
+    // Add empty cells for days before month starts
+    for (let i = 0; i < firstDay; i++) {
+      const emptyCell = document.createElement('div');
+      emptyCell.className = 'h-24 bg-slate-50 dark:bg-slate-900 rounded-lg';
+      calendarGrid.appendChild(emptyCell);
+    }
+    
+    // Add cells for each day of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayDate = new Date(year, month, day);
+      const dayBookings = acceptedBookings.filter(booking => {
+        const bookingDate = new Date(booking.serviceDate);
+        return bookingDate.getFullYear() === year &&
+               bookingDate.getMonth() === month &&
+               bookingDate.getDate() === day;
+      });
+      
+      const isToday = new Date().toDateString() === dayDate.toDateString();
+      
+      const dayCell = document.createElement('div');
+      dayCell.className = `h-24 bg-white dark:bg-background-dark border ${isToday ? 'border-primary border-2' : 'border-slate-200 dark:border-slate-800'} rounded-lg p-2 overflow-y-auto`;
+      
+      dayCell.innerHTML = `
+        <div class="text-sm font-semibold mb-1 ${isToday ? 'text-primary' : 'text-slate-600'}">${day}</div>
+        ${dayBookings.map(booking => {
+          const statusColor = booking.status === 'completed' ? 'bg-green-500' : 'bg-blue-500';
+          const statusLabel = booking.status === 'completed' ? 'Completed' : 'Scheduled';
+          return `
+            <div class="text-xs mb-1 p-1 ${statusColor} text-white rounded cursor-pointer hover:opacity-80" onclick="openStaffBookingModal('${booking.id}')">
+              <div class="font-medium truncate">${booking.client.firstName} ${booking.client.lastName}</div>
+              <div class="text-[10px] truncate">${statusLabel}</div>
+            </div>
+          `;
+        }).join('')}
+      `;
+      
+      calendarGrid.appendChild(dayCell);
+    }
+  }
+
+  function previousMonthStaff() {
+    currentDateStaff.setDate(1); // Set to 1st to avoid month overflow
+    currentDateStaff.setMonth(currentDateStaff.getMonth() - 1);
+    renderStaffCalendar();
+  }
+
+  function nextMonthStaff() {
+    currentDateStaff.setDate(1); // Set to 1st to avoid month overflow
+    currentDateStaff.setMonth(currentDateStaff.getMonth() + 1);
+    renderStaffCalendar();
+  }
+
+  async function openStaffBookingModal(bookingId) {
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}`);
+      const data = await response.json();
+      const booking = data.booking;
+      
+      const date = new Date(booking.serviceDate);
+      const formattedDate = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      
+      const extras = [];
+      if (booking.extras.pets) extras.push('Pets');
+      if (booking.extras.insideFridge) extras.push('Inside Fridge');
+      if (booking.extras.insideOven) extras.push('Inside Oven');
+      if (booking.extras.interiorWindow) extras.push('Interior Window');
+      
+      document.getElementById('staffBookingDetails').innerHTML = `
+        <div class="space-y-6">
+          <!-- Client Info -->
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">person</span>
+              Client Information
+            </h4>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p class="text-slate-500">Name</p>
+                <p class="font-medium">${booking.client.firstName} ${booking.client.lastName}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Email</p>
+                <p class="font-medium">${booking.client.email}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Service Details -->
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">home</span>
+              Service Details
+            </h4>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p class="text-slate-500">Date</p>
+                <p class="font-medium">${formattedDate}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Frequency</p>
+                <p class="font-medium">${booking.frequency.charAt(0).toUpperCase() + booking.frequency.slice(1)}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Square Footage</p>
+                <p class="font-medium">${parseInt(booking.service.sqft).toLocaleString()} sq/ft</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Bedrooms</p>
+                <p class="font-medium">${booking.service.bedrooms}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Bathrooms</p>
+                <p class="font-medium">${booking.service.washrooms}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Half Bathrooms</p>
+                <p class="font-medium">${booking.service.halfWashrooms}</p>
+              </div>
+            </div>
+          </div>
+          
+          ${extras.length > 0 ? `
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">add_circle</span>
+              Extras
+            </h4>
+            <div class="flex flex-wrap gap-2">
+              ${extras.map(extra => `<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-sm">${extra}</span>`).join('')}
+            </div>
+          </div>
+          ` : ''}
+          
+          ${booking.notes ? `
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">note</span>
+              Notes
+            </h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">${booking.notes}</p>
+          </div>
+          ` : ''}
+          
+          <!-- Action Buttons -->
+          <div class="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+            ${booking.status === 'accepted' ? `
+              <button onclick="completeBooking('${booking.id}')" class="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span>Mark as Complete</span>
+              </button>
+            ` : ''}
+            <button onclick="closeStaffBookingModal()" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium transition-colors">
+              Close
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('staffBookingModal').classList.remove('hidden');
+    } catch (error) {
+      console.error('Error loading booking:', error);
+      alert('Failed to load booking details');
+    }
+  }
+
+  function closeStaffBookingModal() {
+    document.getElementById('staffBookingModal').classList.add('hidden');
+  }
+
+  // Close modal when clicking outside
+  document.getElementById('staffBookingModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'staffBookingModal') {
+      closeStaffBookingModal();
+    }
+  });
+
+  // Accept/Decline Booking Functions
+  async function acceptBooking(bookingId) {
+    if (!confirm('Accept this booking? This will confirm the assignment to your schedule.')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}/accept`, {
+        method: 'POST'
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert('Booking accepted! It has been added to your schedule.');
+        loadStaffBookings();
+        loadStaffStats();
+      } else {
+        alert(data.error || 'Failed to accept booking');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while accepting the booking');
+    }
+  }
+
+  async function declineBooking(bookingId) {
+    if (!confirm('Decline this booking? It will be returned to the admin for reassignment.')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}/decline`, {
+        method: 'POST'
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert('Booking declined. The admin will be notified to reassign it.');
+        loadStaffBookings();
+        loadStaffStats();
+      } else {
+        alert(data.error || 'Failed to decline booking');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while declining the booking');
+    }
+  }
+
+  async function completeBooking(bookingId) {
+    const hoursWorked = prompt('How many hours did you work on this job?');
+    
+    if (hoursWorked === null) {
+      return; // User cancelled
+    }
+    
+    const hours = parseFloat(hoursWorked);
+    if (isNaN(hours) || hours <= 0) {
+      alert('Please enter a valid number of hours');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hoursWorked: hours })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`Job marked as complete! ${hours} hours logged.`);
+        closeStaffBookingModal();
+        loadStaffBookings();
+        loadStaffStats();
+      } else {
+        alert(data.error || 'Failed to complete booking');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while completing the booking');
+    }
+  }
+
+  // Load Staff Statistics
+  async function loadStaffStats() {
+    try {
+      const response = await fetch('/api/bookings/all');
+      const data = await response.json();
+      
+      const completedJobs = data.bookings.filter(b => b.status === 'completed').length;
+      const totalHours = data.bookings
+        .filter(b => b.status === 'completed' && b.hoursWorked)
+        .reduce((sum, b) => sum + b.hoursWorked, 0);
+      
+      document.getElementById('completedJobsCount').textContent = completedJobs;
+      document.getElementById('totalHoursCount').textContent = totalHours.toFixed(1);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  }
+
+  // Notification Functions
+  let notificationInterval;
+
+  async function loadNotifications() {
+    try {
+      const response = await fetch('/api/notifications');
+      const data = await response.json();
+      
+      const notificationListEl = document.getElementById('notificationList');
+      
+      if (data.notifications.length === 0) {
+        notificationListEl.innerHTML = '<p class="text-center text-slate-500 text-sm py-8">No notifications</p>';
+      } else {
+        notificationListEl.innerHTML = data.notifications.map(notification => {
+          const timeAgo = getTimeAgo(new Date(notification.createdAt));
+          return `
+            <div class="p-3 rounded-lg ${notification.read ? 'bg-slate-50 dark:bg-slate-800' : 'bg-blue-50 dark:bg-blue-900/20 border border-primary/20'} cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onclick="markNotificationRead('${notification.id}')">
+              <p class="text-sm ${notification.read ? 'text-slate-600 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100 font-medium'}">${notification.message}</p>
+              <p class="text-xs text-slate-500 mt-1">${timeAgo}</p>
+            </div>
+          `;
+        }).join('');
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  }
+
+  async function loadNotificationCount() {
+    try {
+      const response = await fetch('/api/notifications/unread-count');
+      const data = await response.json();
+      
+      const badge = document.getElementById('notificationBadge');
+      if (data.unreadCount > 0) {
+        badge.textContent = data.unreadCount > 9 ? '9+' : data.unreadCount;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    } catch (error) {
+      console.error('Error loading notification count:', error);
+    }
+  }
+
+  async function markNotificationRead(notificationId) {
+    try {
+      await fetch(`/api/notifications/${notificationId}/read`, { method: 'POST' });
+      loadNotifications();
+      loadNotificationCount();
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  }
+
+  async function markAllRead() {
+    try {
+      await fetch('/api/notifications/mark-all-read', { method: 'POST' });
+      loadNotifications();
+      loadNotificationCount();
+    } catch (error) {
+      console.error('Error marking all as read:', error);
+    }
+  }
+
+  function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60
+    };
+    
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInUnit);
+      if (interval >= 1) {
+        return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+      }
+    }
+    return 'Just now';
+  }
+
+  function toggleNotificationPanel(e) {
+    e.stopPropagation();
+    const panel = document.getElementById('notificationPanel');
+    const chatPanel = document.getElementById('chatPanel');
+    
+    if (panel.classList.contains('hidden')) {
+      chatPanel.classList.add('hidden');
+      panel.classList.remove('hidden');
+      loadNotifications();
+    } else {
+      panel.classList.add('hidden');
+    }
+  }
+
+  function closeNotificationPanel() {
+    document.getElementById('notificationPanel').classList.add('hidden');
+  }
+
+  // Event Listeners
+  document.getElementById('notificationButton')?.addEventListener('click', toggleNotificationPanel);
+  document.getElementById('closeNotificationPanel')?.addEventListener('click', closeNotificationPanel);
+  document.getElementById('markAllReadBtn')?.addEventListener('click', markAllRead);
+
+  // Close panels when clicking outside
+  document.addEventListener('click', (e) => {
+    const notificationPanel = document.getElementById('notificationPanel');
+    const notificationButton = document.getElementById('notificationButton');
+    
+    if (!notificationPanel.contains(e.target) && !notificationButton.contains(e.target)) {
+      notificationPanel.classList.add('hidden');
+    }
+  });
+
+  // Load staff bookings, stats, and notifications when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    loadStaffBookings();
+    loadStaffStats();
+    loadNotificationCount();
+    // Poll for new notifications every 30 seconds
+    notificationInterval = setInterval(loadNotificationCount, 30000);
+  });
+
+  // Clean up interval on page unload
+  window.addEventListener('beforeunload', () => {
+    if (notificationInterval) {
+      clearInterval(notificationInterval);
+    }
+  });
+
+  checkAuth();
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+{
+  "activeServiceId": "cleaning-1",
+  "services": [
+    {
+      "id": "cleaning-1",
+      "name": "Cleaning Service",
+      "basePrice": 150,
+      "duration": 120,
+      "createdAt": "2026-01-31T22:00:03.227Z",
+      "formFields": [
+        {
+          "id": "rooms",
+          "label": "Number of Bedrooms",
+          "fieldType": "number",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "bathrooms",
+          "label": "Number of Bathrooms",
+          "fieldType": "number",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "sqft",
+          "label": "Square Footage",
+          "fieldType": "dropdown",
+          "required": true,
+          "options": [
+            "500",
+            "1000",
+            "1500",
+            "2000",
+            "2500",
+            "3000",
+            "3500",
+            "4000",
+            "4500",
+            "5000"
+          ]
+        }
+      ],
+      "pricingRules": [
+        {
+          "id": "1769903510262",
+          "fieldId": "rooms",
+          "ruleType": "multiply",
+          "value": 35
+        },
+        {
+          "id": "1769903519441",
+          "fieldId": "bathrooms",
+          "ruleType": "multiply",
+          "value": 40
+        },
+        {
+          "id": "1769903599798",
+          "fieldId": "sqft",
+          "ruleType": "conditional",
+          "value": 0,
+          "condition": {
+            "500": 0,
+            "1000": 60,
+            "1500": 120,
+            "2000": 180,
+            "2500": 240,
+            "3000": 300,
+            "3500": 360,
+            "4000": 420,
+            "4500": 480,
+            "5000": 540
+          }
+        }
+      ],
+      "extras": [
+        {
+          "id": "extra-1769900764623",
+          "label": "pets",
+          "price": 50
+        },
+        {
+          "id": "extra-1769900834875",
+          "label": "air filter clean",
+          "price": 40
+        }
+      ]
+    },
+    {
+      "id": "1769897067289",
+      "name": "Lawn Service Form",
+      "basePrice": 0,
+      "duration": 120,
+      "createdAt": "2026-01-31T22:04:27.289Z",
+      "formFields": [
+        {
+          "id": "1769897395365",
+          "label": "Lawn Size(sq/ft)",
+          "fieldType": "dropdown",
+          "options": [
+            "500",
+            "1000",
+            "1500",
+            "2000",
+            "2500",
+            "3000"
+          ],
+          "required": true
+        }
+      ],
+      "pricingRules": [
+        {
+          "id": "1769897417048",
+          "fieldId": "1769897395365",
+          "ruleType": "conditional",
+          "value": 0,
+          "condition": {
+            "500": 100,
+            "1000": 120,
+            "1500": 150,
+            "2000": 180,
+            "2500": 210,
+            "3000": 230
+          }
+        }
+      ]
+    },
+    {
+      "id": "1769898067245",
+      "name": "Camera Installation",
+      "basePrice": 0,
+      "duration": 60,
+      "createdAt": "2026-01-31T22:21:07.245Z",
+      "formFields": [
+        {
+          "id": "1769898108134",
+          "label": "Number of Cameras",
+          "fieldType": "number",
+          "options": [],
+          "required": true
+        }
+      ],
+      "pricingRules": [
+        {
+          "id": "1769898193089",
+          "fieldId": "1769898108134",
+          "ruleType": "multiply",
+          "value": 50
+        }
+      ]
+    },
+    {
+      "id": "1769900917635",
+      "name": "Snow Cleaning",
+      "basePrice": 50,
+      "duration": 60,
+      "createdAt": "2026-01-31T23:08:37.635Z",
+      "formFields": [
+        {
+          "id": "1769901513205",
+          "label": "salting",
+          "fieldType": "checkbox",
+          "options": [],
+          "required": false
+        }
+      ],
+      "pricingRules": [
+        {
+          "id": "1769901531068",
+          "fieldId": "1769901513205",
+          "ruleType": "checkbox",
+          "value": 50
+        }
+      ],
+      "extras": []
+    }
+  ]
+}

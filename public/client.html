@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Client Dashboard - ServicePro</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#256af4",
+            "background-light": "#f5f6f8",
+            "background-dark": "#101622",
+            "navy-sidebar": "#0f172a"
+          },
+          fontFamily: {
+            "display": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .section-content { display: none; }
+    .section-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-white">
+<div class="flex h-screen overflow-hidden">
+  <!-- Side Navigation Bar -->
+  <aside class="w-72 bg-navy-sidebar text-white flex flex-col h-full border-r border-navy-sidebar/50">
+    <div class="p-6">
+      <!-- Brand / Logo -->
+      <div class="flex items-center gap-3 mb-8">
+        <div class="size-10 bg-primary rounded-lg flex items-center justify-center">
+          <span class="material-symbols-outlined text-white">handyman</span>
+        </div>
+        <div class="flex flex-col">
+          <h1 class="text-white text-lg font-bold leading-none">ServicePro</h1>
+          <p class="text-slate-400 text-xs mt-1">Client Portal</p>
+        </div>
+      </div>
+      
+      <!-- Primary Action -->
+      <button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 mb-8 transition-colors shadow-lg shadow-primary/20" onclick="showSection('book-service')">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span>Book New Service</span>
+      </button>
+      
+      <!-- Nav Links -->
+      <nav class="flex flex-col gap-1">
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white" href="#" data-section="profile">
+          <span class="material-symbols-outlined text-sm">account_circle</span>
+          <span class="text-sm font-medium">Profile</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="settings">
+          <span class="material-symbols-outlined text-sm">settings</span>
+          <span class="text-sm font-medium">Settings</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="schedule">
+          <span class="material-symbols-outlined text-sm">calendar_month</span>
+          <span class="text-sm font-medium">Schedule</span>
+        </a>
+        <a class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-all" href="#" data-section="book-service">
+          <span class="material-symbols-outlined text-sm">event_note</span>
+          <span class="text-sm font-medium">Book Service</span>
+        </a>
+      </nav>
+    </div>
+    
+    <!-- Sidebar Footer -->
+    <div class="mt-auto p-6 border-t border-white/10">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="size-8 bg-primary/20 rounded-full flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg text-primary">person</span>
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-xs font-medium truncate" id="userName">Client User</p>
+          <p class="text-[10px] text-slate-500 truncate" id="userEmail">client@example.com</p>
+        </div>
+      </div>
+      <button onclick="logout()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span class="text-sm">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- Top Nav Bar -->
+    <header class="h-16 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10">
+      <div class="flex items-center gap-6">
+        <h2 class="text-xl font-bold text-[#111318] dark:text-white tracking-tight" id="pageTitle">My Profile</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- Chat Button -->
+        <button id="chatButton" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg relative">
+          <span class="material-symbols-outlined">chat_bubble</span>
+          <span id="chatNotificationBadge" class="hidden absolute top-1 right-1 size-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold"></span>
+        </button>
+        <a href="help.html" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg transition-colors">
+          <span class="material-symbols-outlined">help_outline</span>
+        </a>
+        <!-- Notifications Button -->
+        <button id="notificationButton" class="p-2 text-slate-500 hover:bg-background-light dark:hover:bg-slate-800 rounded-lg relative">
+          <span class="material-symbols-outlined">notifications</span>
+          <span id="notificationBadge" class="hidden absolute top-1 right-1 size-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold"></span>
+        </button>
+        <div class="h-8 w-[1px] bg-slate-200 dark:bg-slate-800 mx-2"></div>
+        <!-- Profile Button -->
+        <div class="relative">
+          <button id="profileButton" class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined">person</span>
+          </button>
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50">
+            <div class="px-4 py-3">
+              <p class="text-sm font-semibold" id="profileName">Client User</p>
+              <p class="text-xs text-slate-500" id="profileEmail">client@example.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chat Panel -->
+    <div id="chatPanel" class="hidden fixed right-8 top-20 w-96 h-[600px] bg-white dark:bg-background-dark rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col z-50">
+      <!-- Chat Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="font-bold text-lg">Messages</h3>
+        <button id="closeChatPanel" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+          <span class="material-symbols-outlined text-slate-500">close</span>
+        </button>
+      </div>
+      
+      <!-- Chat List View -->
+      <div id="chatListView" class="flex-1 flex flex-col overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800">
+          <button id="startNewChatBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span>New Chat</span>
+          </button>
+        </div>
+        <div id="chatList" class="flex-1 overflow-y-auto">
+          <p class="text-center text-slate-400 py-8 text-sm">Loading...</p>
+        </div>
+      </div>
+
+      <!-- New Chat View -->
+      <div id="newChatView" class="hidden flex-1 flex flex-col p-6">
+        <h4 class="font-semibold mb-4">Start New Chat</h4>
+        <form id="newChatForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Enter User Email</label>
+            <input type="email" id="newChatEmail" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="user@example.com">
+            <p id="newChatError" class="text-red-500 text-xs mt-1"></p>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold py-2 rounded-lg transition-colors">Start Chat</button>
+            <button type="button" id="cancelNewChat" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition-colors">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Chat View -->
+      <div id="chatView" class="hidden flex-1 flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <button id="backToChats" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+            <span class="material-symbols-outlined text-slate-500">arrow_back</span>
+          </button>
+          <div>
+            <p class="font-semibold text-sm" id="chatUserName">User</p>
+          </div>
+        </div>
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3">
+          <!-- Messages will be loaded here -->
+        </div>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="flex gap-2">
+            <input type="text" id="messageInput" placeholder="Type a message..." class="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+            <button id="sendMessageBtn" class="bg-primary hover:bg-primary/90 text-white p-2 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notificationPanel" class="hidden fixed right-8 top-20 w-96 max-h-[600px] bg-white dark:bg-background-dark rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col z-50">
+      <!-- Notification Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="font-bold text-lg">Notifications</h3>
+        <div class="flex items-center gap-2">
+          <button id="markAllReadBtn" class="text-xs text-primary hover:text-blue-600 font-medium">Mark all read</button>
+          <button id="closeNotificationPanel" class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">
+            <span class="material-symbols-outlined text-slate-500">close</span>
+          </button>
+        </div>
+      </div>
+      <!-- Notification List -->
+      <div id="notificationList" class="flex-1 overflow-y-auto p-4 space-y-2">
+        <p class="text-center text-slate-500 text-sm py-8">No notifications</p>
+      </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="p-8">
+      
+      <!-- Profile Section -->
+      <div id="profile-section" class="section-content active">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Welcome, <span id="userFullName"></span>!</h3>
+          <p class="text-slate-500">Here's your profile information</p>
+        </div>
+        
+        <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 mb-6">
+          <div class="flex items-start gap-6">
+            <div class="size-20 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-4xl">person</span>
+            </div>
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-xs text-slate-500 font-medium mb-1">Full Name</p>
+                <p class="text-base font-semibold" id="profileFullName"></p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium mb-1">Email</p>
+                <p class="text-base font-semibold" id="profileEmail"></p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium mb-1">Phone</p>
+                <p class="text-base font-semibold" id="profilePhone"></p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium mb-1">City</p>
+                <p class="text-base font-semibold" id="profileCity"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 shadow-sm">
+            <div class="size-12 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">upcoming</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-slate-500">Upcoming Services</p>
+              <p class="text-2xl font-bold"><span id="upcomingCount">0</span> Scheduled</p>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 shadow-sm">
+            <div class="size-12 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+              <span class="material-symbols-outlined">check_circle</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-slate-500">Completed</p>
+              <p class="text-2xl font-bold"><span id="completedCount">0</span> Services</p>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-background-dark p-6 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 shadow-sm">
+            <div class="size-12 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-500">
+              <span class="material-symbols-outlined">pending</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-slate-500">Pending</p>
+              <p class="text-2xl font-bold"><span id="pendingCount">0</span> Services</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Section -->
+      <div id="settings-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Settings</h3>
+          <p class="text-slate-500">Manage your account settings</p>
+        </div>
+        <div class="bg-white dark:bg-background-dark p-8 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+          <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">settings</span>
+          <p class="text-slate-500">Settings coming soon</p>
+        </div>
+      </div>
+
+      <!-- Schedule Section -->
+      <div id="schedule-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">My Schedule</h3>
+          <p class="text-slate-500">View your upcoming and past appointments</p>
+        </div>
+        <div id="clientBookingsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Bookings will be loaded here -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="clientEmptyState" class="hidden bg-white dark:bg-background-dark p-12 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+          <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">calendar_month</span>
+          <p class="text-slate-500">No scheduled services yet</p>
+          <p class="text-sm text-slate-400 mt-2">Your bookings will appear here</p>
+        </div>
+      </div>
+      
+      <!-- Client Booking Details Modal -->
+      <div id="clientBookingModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-background-dark rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <h3 class="text-xl font-bold">Booking Details</h3>
+            <button onclick="closeClientBookingModal()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <div id="clientBookingDetails" class="p-6">
+            <!-- Booking details will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Book Service Section -->
+      <div id="book-service-section" class="section-content">
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Book a Service</h3>
+          <p class="text-slate-500">Schedule a new service appointment</p>
+        </div>
+        <div class="bg-white dark:bg-background-dark p-8 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+          <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">event_note</span>
+          <p class="text-slate-500">Booking system coming soon</p>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<script src="chat-component.js"></script>
+<script>
+  async function checkAuth() {
+    const response = await fetch('/api/session');
+    const data = await response.json();
+    
+    if (!data.loggedIn || data.user.userType !== 'client') {
+      window.location.href = '/';
+      return;
+    }
+    
+    const fullName = `${data.user.firstName} ${data.user.lastName}`;
+    document.getElementById('userName').textContent = data.user.firstName;
+    document.getElementById('userEmail').textContent = data.user.email;
+    document.getElementById('userFullName').textContent = fullName;
+    document.getElementById('profileFullName').textContent = fullName;
+    document.getElementById('profileEmail').textContent = data.user.email;
+    document.getElementById('profilePhone').textContent = data.user.phone;
+    document.getElementById('profileCity').textContent = data.user.city;
+    document.getElementById('profileName').textContent = fullName;
+  }
+
+  async function logout() {
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/';
+  }
+
+  function showSection(section) {
+    // Update active nav
+    document.querySelectorAll('.nav-link').forEach(l => {
+      l.classList.remove('bg-primary', 'text-white');
+      l.classList.add('text-slate-400');
+    });
+    const link = document.querySelector(`[data-section="${section}"]`);
+    if (link) {
+      link.classList.add('bg-primary', 'text-white');
+      link.classList.remove('text-slate-400');
+    }
+    
+    // Show section
+    document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+    document.getElementById(`${section}-section`).classList.add('active');
+    
+    // Update title
+    const titles = {
+      profile: 'My Profile',
+      settings: 'Settings',
+      schedule: 'My Schedule',
+      'book-service': 'Book a Service'
+    };
+    document.getElementById('pageTitle').textContent = titles[section] || 'Client Dashboard';
+  }
+
+  // Navigation
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const section = link.dataset.section;
+      showSection(section);
+    });
+  });
+
+  // Notification Functions
+  let notificationInterval;
+
+  async function loadNotifications() {
+    try {
+      const response = await fetch('/api/notifications');
+      const data = await response.json();
+      
+      const notificationListEl = document.getElementById('notificationList');
+      
+      if (data.notifications.length === 0) {
+        notificationListEl.innerHTML = '<p class="text-center text-slate-500 text-sm py-8">No notifications</p>';
+      } else {
+        notificationListEl.innerHTML = data.notifications.map(notification => {
+          const timeAgo = getTimeAgo(new Date(notification.createdAt));
+          return `
+            <div class="p-3 rounded-lg ${notification.read ? 'bg-slate-50 dark:bg-slate-800' : 'bg-blue-50 dark:bg-blue-900/20 border border-primary/20'} cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onclick="markNotificationRead('${notification.id}')">
+              <p class="text-sm ${notification.read ? 'text-slate-600 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100 font-medium'}">${notification.message}</p>
+              <p class="text-xs text-slate-500 mt-1">${timeAgo}</p>
+            </div>
+          `;
+        }).join('');
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  }
+
+  async function loadNotificationCount() {
+    try {
+      const response = await fetch('/api/notifications/unread-count');
+      const data = await response.json();
+      
+      const badge = document.getElementById('notificationBadge');
+      if (data.unreadCount > 0) {
+        badge.textContent = data.unreadCount > 9 ? '9+' : data.unreadCount;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    } catch (error) {
+      console.error('Error loading notification count:', error);
+    }
+  }
+
+  async function markNotificationRead(notificationId) {
+    try {
+      await fetch(`/api/notifications/${notificationId}/read`, { method: 'POST' });
+      loadNotifications();
+      loadNotificationCount();
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  }
+
+  async function markAllRead() {
+    try {
+      await fetch('/api/notifications/mark-all-read', { method: 'POST' });
+      loadNotifications();
+      loadNotificationCount();
+    } catch (error) {
+      console.error('Error marking all as read:', error);
+    }
+  }
+
+  function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60
+    };
+    
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInUnit);
+      if (interval >= 1) {
+        return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+      }
+    }
+    return 'Just now';
+  }
+
+  function toggleNotificationPanel(e) {
+    e.stopPropagation();
+    const panel = document.getElementById('notificationPanel');
+    const chatPanel = document.getElementById('chatPanel');
+    
+    if (panel.classList.contains('hidden')) {
+      chatPanel.classList.add('hidden');
+      panel.classList.remove('hidden');
+      loadNotifications();
+    } else {
+      panel.classList.add('hidden');
+    }
+  }
+
+  function closeNotificationPanel() {
+    document.getElementById('notificationPanel').classList.add('hidden');
+  }
+
+  // Event Listeners
+  document.getElementById('notificationButton')?.addEventListener('click', toggleNotificationPanel);
+  document.getElementById('closeNotificationPanel')?.addEventListener('click', closeNotificationPanel);
+  document.getElementById('markAllReadBtn')?.addEventListener('click', markAllRead);
+
+  // Close panels when clicking outside
+  document.addEventListener('click', (e) => {
+    const notificationPanel = document.getElementById('notificationPanel');
+    const notificationButton = document.getElementById('notificationButton');
+    
+    if (!notificationPanel.contains(e.target) && !notificationButton.contains(e.target)) {
+      notificationPanel.classList.add('hidden');
+    }
+  });
+
+  // Client Stats Functions
+  async function loadClientStats() {
+    try {
+      const response = await fetch('/api/bookings/all');
+      const data = await response.json();
+      
+      // Count upcoming bookings (not completed)
+      const upcoming = data.bookings.filter(b => 
+        b.status !== 'completed' && new Date(b.serviceDate) >= new Date()
+      ).length;
+      
+      // Count completed bookings
+      const completed = data.bookings.filter(b => b.status === 'completed').length;
+      
+      // Count pending bookings (pending or pending_acceptance)
+      const pending = data.bookings.filter(b => 
+        b.status === 'pending' || b.status === 'pending_acceptance'
+      ).length;
+      
+      // Update the UI
+      document.getElementById('upcomingCount').textContent = upcoming;
+      document.getElementById('completedCount').textContent = completed;
+      document.getElementById('pendingCount').textContent = pending;
+    } catch (error) {
+      console.error('Error loading client stats:', error);
+    }
+  }
+
+  // Client Booking Functions
+  async function loadClientBookings() {
+    try {
+      const response = await fetch('/api/bookings/all');
+      const data = await response.json();
+      
+      const bookingsListEl = document.getElementById('clientBookingsList');
+      const emptyStateEl = document.getElementById('clientEmptyState');
+      
+      if (data.bookings.length === 0) {
+        bookingsListEl.innerHTML = '';
+        emptyStateEl.classList.remove('hidden');
+      } else {
+        emptyStateEl.classList.add('hidden');
+        bookingsListEl.innerHTML = data.bookings.map(booking => {
+          const date = new Date(booking.serviceDate);
+          const formattedDate = date.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+          const statusColors = {
+            'pending': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+            'pending_acceptance': 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
+            'accepted': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+            'completed': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+          };
+          
+          const statusLabels = {
+            'pending': 'Pending Assignment',
+            'pending_acceptance': 'Awaiting Staff',
+            'accepted': 'Confirmed',
+            'completed': 'Completed'
+          };
+          
+          return `
+            <div class="bg-white dark:bg-background-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:shadow-lg transition-shadow cursor-pointer" onclick="openClientBookingModal('${booking.id}')">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg mb-1">${booking.frequency.charAt(0).toUpperCase() + booking.frequency.slice(1)} Cleaning</h4>
+                  <p class="text-sm text-slate-500">${formattedDate}</p>
+                </div>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusColors[booking.status] || statusColors['pending']}">${statusLabels[booking.status] || booking.status}</span>
+              </div>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                  <span class="material-symbols-outlined text-sm">home</span>
+                  <span>${booking.service.sqft} sq/ft • ${booking.service.bedrooms}BR • ${booking.service.washrooms}BA</span>
+                </div>
+                ${booking.assignedTo ? `
+                <div class="flex items-center gap-2 text-primary">
+                  <span class="material-symbols-outlined text-sm">person</span>
+                  <span class="font-medium">${booking.assignedTo}</span>
+                </div>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+    }
+  }
+
+  async function openClientBookingModal(bookingId) {
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}`);
+      const data = await response.json();
+      const booking = data.booking;
+      
+      const date = new Date(booking.serviceDate);
+      const formattedDate = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      
+      const extras = [];
+      if (booking.extras.pets) extras.push('Pets');
+      if (booking.extras.insideFridge) extras.push('Inside Fridge');
+      if (booking.extras.insideOven) extras.push('Inside Oven');
+      if (booking.extras.interiorWindow) extras.push('Interior Window');
+      
+      const statusLabels = {
+        'pending': 'Pending Assignment',
+        'pending_acceptance': 'Awaiting Staff Confirmation',
+        'accepted': 'Confirmed',
+        'completed': 'Completed'
+      };
+      
+      document.getElementById('clientBookingDetails').innerHTML = `
+        <div class="space-y-6">
+          <!-- Status -->
+          <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p class="text-sm text-slate-600 dark:text-slate-400">Status</p>
+            <p class="text-lg font-bold text-primary">${statusLabels[booking.status] || booking.status}</p>
+          </div>
+          
+          <!-- Service Details -->
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">home</span>
+              Service Details
+            </h4>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p class="text-slate-500">Date</p>
+                <p class="font-medium">${formattedDate}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Frequency</p>
+                <p class="font-medium">${booking.frequency.charAt(0).toUpperCase() + booking.frequency.slice(1)}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Square Footage</p>
+                <p class="font-medium">${parseInt(booking.service.sqft).toLocaleString()} sq/ft</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Bedrooms</p>
+                <p class="font-medium">${booking.service.bedrooms}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Bathrooms</p>
+                <p class="font-medium">${booking.service.washrooms}</p>
+              </div>
+              <div>
+                <p class="text-slate-500">Half Bathrooms</p>
+                <p class="font-medium">${booking.service.halfWashrooms}</p>
+              </div>
+            </div>
+          </div>
+          
+          ${extras.length > 0 ? `
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">add_circle</span>
+              Extras
+            </h4>
+            <div class="flex flex-wrap gap-2">
+              ${extras.map(extra => `<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-sm">${extra}</span>`).join('')}
+            </div>
+          </div>
+          ` : ''}
+          
+          ${booking.notes ? `
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">note</span>
+              Notes
+            </h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">${booking.notes}</p>
+          </div>
+          ` : ''}
+          
+          ${booking.assignedTo ? `
+          <div>
+            <h4 class="font-semibold mb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">person</span>
+              Assigned Staff
+            </h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">${booking.assignedTo}</p>
+          </div>
+          ` : ''}
+          
+          <!-- Close Button -->
+          <div class="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+            <button onclick="closeClientBookingModal()" class="w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium transition-colors">
+              Close
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('clientBookingModal').classList.remove('hidden');
+    } catch (error) {
+      console.error('Error loading booking:', error);
+      alert('Failed to load booking details');
+    }
+  }
+
+  function closeClientBookingModal() {
+    document.getElementById('clientBookingModal').classList.add('hidden');
+  }
+
+  // Close modal when clicking outside
+  document.getElementById('clientBookingModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'clientBookingModal') {
+      closeClientBookingModal();
+    }
+  });
+
+  // Load notifications and bookings on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    loadNotificationCount();
+    loadClientStats();
+    loadClientBookings();
+    // Poll for new notifications every 30 seconds
+    notificationInterval = setInterval(loadNotificationCount, 30000);
+  });
+
+  // Clean up interval on page unload
+  window.addEventListener('beforeunload', () => {
+    if (notificationInterval) {
+      clearInterval(notificationInterval);
+    }
+  });
+
+  checkAuth();
+</script>
+</body>
+</html>
